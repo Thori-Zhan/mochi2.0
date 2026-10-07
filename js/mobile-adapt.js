@@ -41,7 +41,12 @@
     const bounds = probe.getBoundingClientRect();
     const style = getComputedStyle(probe);
     const vv = window.visualViewport;
-    const fullHeight = bounds.height || window.innerHeight;
+    let fullHeight = bounds.height || window.innerHeight;
+    const standalone = matchMedia('(display-mode:standalone)').matches || navigator.standalone;
+    const topInset = parseFloat(style.paddingTop) || 0;
+    if (standalone && topInset > 0 && Math.abs(screen.height - fullHeight - topInset) <= 2) {
+      fullHeight += topInset;
+    }
     const zoomed = vv && Math.abs(vv.scale - 1) > 0.05;
     const keyboard = !!(editable() && vv && !zoomed && fullHeight - vv.height > 100);
     const height = keyboard ? vv.height : fullHeight;
