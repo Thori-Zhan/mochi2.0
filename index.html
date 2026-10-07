@@ -10937,6 +10937,38 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 [data-theme="dark"] #page-chat .chat-head,[data-theme="dark"] #page-chat .chat-input-row { background:#202020; border-color:#333; }
 [data-theme="dark"] #page-chat .chat-input,[data-theme="dark"] #page-chat .msg-in .msg-bubble { background:#303030; color:#eee; }
 
+#page-outfit{padding:0;background:var(--private-bg);color:var(--private-ink);min-height:0}
+#page-outfit[hidden]{display:none!important}
+#page-outfit button,#page-outfit input,#page-outfit textarea{font:inherit;color:inherit}
+#page-outfit button{min-height:44px;border:0;border-radius:10px;background:transparent;padding:8px 10px;cursor:pointer}
+#page-outfit .oj-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--private-bottom-bg);border-bottom:1px solid #e3e9f2;flex-shrink:0}
+#page-outfit h2{font-size:19px;margin:0;font-weight:600}#page-outfit .oj-main{flex:1;min-height:0;overflow:auto;padding:16px 12px calc(16px + var(--private-safe-bottom,0px));overscroll-behavior:contain}
+#page-outfit .oj-top,#page-outfit .oj-navigation{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+#page-outfit .oj-period{font-size:16px;font-weight:600}#page-outfit .oj-small{color:#758198;font-size:12px}
+#page-outfit .oj-switch{display:flex;padding:3px;border-radius:12px;background:#eaf0f8}#page-outfit .oj-switch button{font-size:13px;min-height:38px;padding:7px 12px}#page-outfit .oj-switch button[aria-pressed=true]{background:#fff;color:#416da0}
+#page-outfit .oj-navigation button{color:#416da0}#page-outfit .oj-arrows{display:flex;gap:4px}
+#page-outfit .oj-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#page-outfit .oj-day{padding:0;text-align:left;overflow:hidden;border:1px solid #e3e9f2;background:#fff;border-radius:13px;min-width:0}
+#page-outfit .oj-date{display:flex;justify-content:space-between;padding:8px 5px;font-size:11px;gap:2px;white-space:nowrap}
+#page-outfit .oj-day.today,#page-outfit .oj-month-day.today{border-color:#416da0}
+#page-outfit .oj-photo{aspect-ratio:3/4;margin:0 5px;border-radius:7px;background:#f1f4f8;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#758198;font-size:12px;flex-direction:column;gap:4px}
+#page-outfit .oj-photo img{width:100%;height:100%;object-fit:cover}#page-outfit .oj-look-note{padding:7px 6px 9px;font-size:11px;color:#758198;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+#page-outfit .oj-summary{background:#eaf0f8;border-radius:13px;padding:10px;font-size:12px;color:#758198;display:flex;flex-direction:column;justify-content:center;gap:8px}
+#page-outfit .oj-month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}#page-outfit .oj-weekday{font-size:11px;text-align:center;color:#758198;padding:5px 0}
+#page-outfit .oj-month-day{padding:5px 2px;min-height:70px;border:1px solid #e3e9f2;border-radius:8px;background:#fff;font-size:12px;text-align:center;min-width:0}
+#page-outfit .oj-month-day img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;display:block;margin-top:4px}
+#page-outfit .oj-dot{display:block;margin:6px auto;width:5px;height:5px;background:#416da0;border-radius:50%}
+#page-outfit .oj-footer{display:flex;justify-content:space-between;gap:8px;margin-top:15px;padding-top:12px;border-top:1px solid #e3e9f2;font-size:12px;color:#758198}
+#page-outfit .oj-editor{margin-top:16px;padding:14px;border:1px solid #e3e9f2;border-radius:17px;background:#fff}#page-outfit .oj-editor[hidden]{display:none}
+#page-outfit .oj-editor-title{display:flex;align-items:center;justify-content:space-between}#page-outfit h3{margin:0;font-size:16px}
+#page-outfit label{display:block;font-size:12px;color:#758198;margin:9px 0}#page-outfit input,#page-outfit textarea{width:100%;margin-top:5px;padding:9px;border:1px solid #e3e9f2;background:#f5f7fb;border-radius:8px;font-size:16px;box-sizing:border-box}
+#page-outfit textarea{min-height:66px;resize:vertical}#page-outfit input[type=file]{font-size:12px}#page-outfit .oj-editor-photo{max-width:140px;margin:10px auto}
+#page-outfit .oj-actions{display:flex;gap:6px;flex-wrap:wrap}#page-outfit .oj-actions button{flex:1;background:#eef3fa}#page-outfit .oj-actions .oj-save{background:#416da0;color:#fff}#page-outfit .oj-actions .oj-delete{color:#b74444}
+#page-outfit .oj-status{font-size:12px;color:#758198;margin-top:9px;min-height:18px}
+[data-theme=dark] #page-outfit .oj-day,[data-theme=dark] #page-outfit .oj-month-day,[data-theme=dark] #page-outfit .oj-editor,[data-theme=dark] #page-outfit .oj-switch button[aria-pressed=true]{background:#232a35;border-color:#354152}
+[data-theme=dark] #page-outfit .oj-photo,[data-theme=dark] #page-outfit input,[data-theme=dark] #page-outfit textarea,[data-theme=dark] #page-outfit .oj-summary,[data-theme=dark] #page-outfit .oj-switch{background:#303e52;color:#d2dced}
+@media(max-width:350px){#page-outfit .oj-grid{gap:5px}#page-outfit .oj-main{padding-left:8px;padding-right:8px}}
+
 </style>
 </head>
 <body>
@@ -15350,7 +15382,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
   // v3.5.123：readonly 起手（防 Chrome 密码弹条破坏表单签名）——这里立即解除，
   // 早于所有功能模块，任何设备都不会出现输入框不可用的情况
   (function () { var _ci = document.getElementById('chat-input'); if (_ci) _ci.readOnly = false; })();
-window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window.__mochiJsFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js"];window.__mochiExtFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js"];window.__mochiBootAt=Date.now();</script>
+window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window.__mochiJsFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js"];window.__mochiExtFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js"];window.__mochiBootAt=Date.now();</script>
 
 
 
@@ -15422,5 +15454,6 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 <script defer src="js/pwa.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('pwa.js')"></script>
 <script defer src="js/settings-help.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('settings-help.js')"></script>
 <script defer src="js/mobile-adapt.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mobile-adapt.js')"></script>
+<script defer src="js/outfit-journal.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('outfit-journal.js')"></script>
 <script defer src="js/private-runtime.js"></script>
 </body></html>
