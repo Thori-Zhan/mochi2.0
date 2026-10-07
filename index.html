@@ -10876,7 +10876,43 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 #page-chat #chat-img-btn { display:none !important; }
 #private-startup-status { position:fixed; top:env(safe-area-inset-top,0px); left:50%; transform:translateX(-50%); z-index:100; max-width:calc(100vw - 24px); padding:7px 12px; background:#edf3fa; color:#416da0; border:1px solid #dbe5f2; border-radius:0 0 10px 10px; font-size:12px; pointer-events:none; }
 #private-startup-status[hidden] { display:none; }
-@media(max-width:600px) { .phone { width:100% !important; max-width:none; border-radius:0; border:0; padding-top:env(safe-area-inset-top); } }
+/* The upstream html/body are flex containers. An auto-width body plus a
+   percentage-width phone shrink-wraps on WebKit. Size both explicitly and
+   reserve the system top inset once, including on no-statusbar pages. */
+@media(max-width:900px), (hover:none) and (pointer:coarse) {
+  html, html body {
+    width:100% !important; max-width:100%; margin:0; padding:0 !important;
+    min-height:0 !important; height:100vh; overflow:hidden;
+    align-items:stretch !important; justify-content:flex-start !important;
+    background:var(--private-bg);
+  }
+  html body { display:flex; flex-direction:column; }
+  html body .phone, html body .phone.no-statusbar {
+    width:100% !important; max-width:none !important; min-width:0;
+    height:var(--mochi-ios-h,100vh); min-height:0 !important;
+    flex:none; align-self:stretch; box-sizing:border-box;
+    border-radius:0; border:0; top:0 !important;
+    padding:var(--mochi-safe-top,env(safe-area-inset-top,0px)) 0 0 !important;
+  }
+  @supports (height:100dvh) {
+    html, html body { height:var(--mochi-ios-h,100dvh); }
+    html body .phone { height:var(--mochi-ios-h,100dvh); }
+  }
+  .phone > .page { min-width:0; min-height:0; }
+  html body .phone .tabbar {
+    flex-shrink:0; margin:0 !important; border-radius:0;
+    padding:8px 8px calc(8px + var(--mochi-safe-bottom,env(safe-area-inset-bottom,0px)));
+  }
+  html body .phone .tabbar .tab { box-sizing:border-box; min-height:48px; padding:4px 0; }
+  html body .phone #page-chat .chat-head {
+    flex-shrink:0; padding:8px 12px;
+  }
+  html body .phone #page-chat .chat-body { flex:1; min-height:0; min-width:0; }
+  html body .phone #page-chat .chat-input-row {
+    flex-shrink:0; width:100%; box-sizing:border-box; margin:0 !important;
+    padding:8px 10px calc(8px + var(--mochi-safe-bottom,env(safe-area-inset-bottom,0px)));
+  }
+}
 [data-theme="dark"] { --private-bg:#171b23; --private-ink:#e0e5ee; }
 [data-theme="dark"] .glass,[data-theme="dark"] .deco-widget,[data-theme="dark"] .set-group,[data-theme="dark"] .tabbar,[data-theme="dark"] .app-ico { background:#232a35; border-color:#333c49; }
 [data-theme="dark"] #page-chat { background:#151515; }
