@@ -10836,7 +10836,7 @@ html.tablet .tabbar .tab { padding:14px 8px; border-radius:16px; }
 [data-theme="dark"] .fd-fbar-name { color:#fff; }
 
 /* Private UI: structural mobile adaptation is retained; manual tuning is not required. */
-:root { --private-blue:#416da0; --private-bg:#f5f7fb; --private-ink:#243246; }
+:root { --private-blue:#416da0; --private-bg:#f5f7fb; --private-ink:#243246; --private-bottom-bg:#f7f7f7; }
 body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif; background:var(--private-bg); color:var(--private-ink); }
 .phone { box-shadow:none; background:var(--private-bg); }
 .statusbar { display:none !important; }
@@ -10848,7 +10848,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 .app-ico { background:white; border:1px solid #e6ebf2; box-shadow:none; border-radius:16px; }
 .app-name { color:#42516a; font-size:12px; }
 .glass,.set-group { background:white; box-shadow:none; border:1px solid #e8edf4; border-radius:16px; }
-.tabbar { background:#fff; border-top:1px solid #e5eaf1; box-shadow:none; padding-bottom:max(10px,env(safe-area-inset-bottom)); }
+.tabbar { background:var(--private-bottom-bg); border:0; border-top:1px solid #e5eaf1; box-shadow:none; padding-bottom:max(10px,env(safe-area-inset-bottom)); }
 .tab.active { color:var(--private-blue); }
 .tabbar { border-radius:0; margin-top:0; }
 .tabbar .tab { flex-direction:column; gap:4px; height:auto; min-height:48px; border:0; border-radius:8px; }
@@ -10884,7 +10884,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
     width:100% !important; max-width:100%; margin:0; padding:0 !important;
     min-height:0 !important; height:100vh; overflow:hidden;
     align-items:stretch !important; justify-content:flex-start !important;
-    background:var(--private-bg);
+    background:var(--private-bottom-bg) !important;
   }
   html body { display:flex; flex-direction:column; }
   html body .phone, html body .phone.no-statusbar {
@@ -10910,19 +10910,21 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
   html body .phone .tabbar {
     flex-shrink:0; margin:0 !important; border-radius:0;
     width:100%; box-sizing:border-box;
-    padding:8px 8px calc(8px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
+    background:var(--private-bottom-bg); border:0; border-top:1px solid #e5eaf1;
+    padding:5px 8px calc(2px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
   }
-  html body .phone .tabbar .tab { box-sizing:border-box; min-height:48px; padding:4px 0; }
+  html body .phone .tabbar .tab { box-sizing:border-box; min-height:48px; padding:3px 0; gap:3px; background:transparent; }
   html body .phone #page-chat .chat-head {
     flex-shrink:0; padding:8px 12px;
   }
   html body .phone #page-chat .chat-body { flex:1; min-height:0; min-width:0; }
   html body .phone #page-chat .chat-input-row {
     flex-shrink:0; width:100%; box-sizing:border-box; margin:0 !important;
-    padding:8px 10px calc(8px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
+    background:var(--private-bottom-bg); border:0; border-top:1px solid #ddd;
+    padding:8px 10px calc(4px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
   }
 }
-[data-theme="dark"] { --private-bg:#171b23; --private-ink:#e0e5ee; }
+[data-theme="dark"] { --private-bg:#171b23; --private-ink:#e0e5ee; --private-bottom-bg:#202020; }
 [data-theme="dark"] .glass,[data-theme="dark"] .deco-widget,[data-theme="dark"] .set-group,[data-theme="dark"] .tabbar,[data-theme="dark"] .app-ico { background:#232a35; border-color:#333c49; }
 [data-theme="dark"] #page-chat { background:#151515; }
 [data-theme="dark"] #page-chat .chat-head,[data-theme="dark"] #page-chat .chat-input-row { background:#202020; border-color:#333; }
