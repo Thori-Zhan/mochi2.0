@@ -10911,9 +10911,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
     flex-shrink:0; margin:0 !important; border-radius:0;
     width:100%; box-sizing:border-box;
     background:var(--private-bottom-bg); border:0; border-top:1px solid #e5eaf1;
-    padding:5px 8px calc(2px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
+    padding:2px 8px var(--private-safe-bottom,env(safe-area-inset-bottom,0px));
   }
-  html body .phone .tabbar .tab { box-sizing:border-box; min-height:48px; padding:3px 0; gap:3px; background:transparent; }
+  html body .phone .tabbar .tab { box-sizing:border-box; height:44px; min-height:44px; padding:0; gap:2px; background:transparent; }
+  html body .phone .tabbar .tab svg { width:24px; height:24px; flex-shrink:0; }
   html body .phone #page-chat .chat-head {
     flex-shrink:0; padding:8px 12px;
   }
@@ -10921,7 +10922,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
   html body .phone #page-chat .chat-input-row {
     flex-shrink:0; width:100%; box-sizing:border-box; margin:0 !important;
     background:var(--private-bottom-bg); border:0; border-top:1px solid #ddd;
-    padding:8px 10px calc(4px + var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
+    padding:6px 10px max(6px,var(--private-safe-bottom,env(safe-area-inset-bottom,0px)));
   }
 }
 [data-theme="dark"] { --private-bg:#171b23; --private-ink:#e0e5ee; --private-bottom-bg:#202020; }
