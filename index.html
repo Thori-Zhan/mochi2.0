@@ -10899,6 +10899,12 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
     html, html body { height:100dvh; }
     html body .phone, html body .phone.no-statusbar { height:100dvh; }
   }
+  /* Root clipping must follow the same viewport as the phone. Otherwise an
+     iOS 879px root clips a corrected 926px shell, including its labels. */
+  html.private-viewport, html.private-viewport body {
+    height:calc(var(--private-viewport-height,100vh) + var(--private-viewport-top,0px)) !important;
+    min-height:0 !important; max-height:none !important;
+  }
   html.private-viewport body .phone, html.private-viewport body .phone.no-statusbar {
     position:fixed !important; inset:auto 0 auto !important;
     top:var(--private-viewport-top,0px) !important;
