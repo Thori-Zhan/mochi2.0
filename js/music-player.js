@@ -523,7 +523,7 @@
       { url: 'https://proxy.cors.sh/' + apiUrl, parse: parseOfficialPlaylist },
       { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(apiUrl), parse: parseOfficialPlaylist }
     ];
-    const results = [];
+    const results = [], errors = [];
     let pending = sources.length, knownTotal = 0, settled = false, graceTimer = 0, hardTimer = 0;
     function bestList() {
       let best = null;
@@ -538,7 +538,7 @@
       settled = true;
       clearTimeout(hardTimer); clearTimeout(graceTimer);
       const best = bestList();
-      cb(best && best.length ? best : null, knownTotal);
+      cb(best && best.length ? best : null, knownTotal, errors);
     }
     hardTimer = setTimeout(finish, 8000);
     sources.forEach((src, pri) => {
@@ -552,6 +552,10 @@
         .then(txt => {
           let res = null;
           try { res = src.parse(txt); } catch (e) { res = null; }
+          if (!res) {
+            let detail; try { detail = JSON.parse(txt); } catch(e) {}
+            errors.push(new URL(src.url).hostname + ': ' + (detail && typeof detail.message === 'string' ? detail.message : detail && typeof detail.error === 'string' ? detail.error : '未返回有效歌曲列表'));
+          }
           if (res && res.list && res.list.length) {
             res.pri = pri;
             results.push(res);
@@ -562,12 +566,12 @@
           }
           done();
         })
-        .catch(() => { done(); });
+        .catch(e => { errors.push(new URL(src.url).hostname + ': ' + (e.name === 'AbortError' ? '请求超时' : String(e.message || '网络请求失败'))); done(); });
     });
   }
   function importNeteasePlaylist(id, done, targetPl) {
-    fetchNeteasePlaylist(id, function (tracks, totalKnown) {
-      if (!tracks || !tracks.length) { done({ ok: false }); return; }
+    fetchNeteasePlaylist(id, function (tracks, totalKnown, errors) {
+      if (!tracks || !tracks.length) { done({ ok: false, error: '歌单 ' + id + ' 获取失败：' + (errors || []).join('；') }); return; }
       let added = 0, skipped = 0, vip = 0;
       const now = Date.now();
       const addedIds = [];
@@ -581,7 +585,7 @@
         added++;
       });
       const miss = Math.max(0, (totalKnown || 0) - tracks.length);
-      done({ ok: true, added: added, skipped: skipped, vip: vip, miss: miss });
+      done({ ok: true, added: added, skipped: skipped, vip: vip, miss: miss, incompleteUnknown: !totalKnown });
       if (addedIds.length) enrichImportedDurations(id, addedIds);
     });
   }
@@ -904,12 +908,13 @@
     if (tch) saveTaFavList(tl);
   }
   function importPlaylistIds(ids, cb, targetPl) {
+    const errors = []; let incompleteUnknown = false;
     let total = 0, plOk = 0, plFail = 0, skipped = 0, vip = 0, miss = 0;
     const next = (i) => {
-      if (i >= ids.length) { cb({ total: total, plOk: plOk, plFail: plFail, skipped: skipped, vip: vip, miss: miss }); return; }
+      if (i >= ids.length) { cb({ total: total, plOk: plOk, plFail: plFail, skipped: skipped, vip: vip, miss: miss, errors: errors, incompleteUnknown: incompleteUnknown }); return; }
       importNeteasePlaylist(ids[i], (res) => {
-        if (res.ok) { plOk++; total += res.added; skipped += res.skipped; vip += res.vip || 0; miss += res.miss || 0; }
-        else plFail++;
+        if (res.ok) { plOk++; total += res.added; skipped += res.skipped; vip += res.vip || 0; miss += res.miss || 0; incompleteUnknown ||= res.incompleteUnknown; }
+        else { plFail++; if (res.error) errors.push(res.error); }
         next(i + 1);
       }, targetPl);
     };
@@ -1247,7 +1252,9 @@
                 msg += '；' + res.plFail + ' 个失败（可能私密/已失效/被浏览器拦截）';
               }
             }
+            if (res.incompleteUnknown) msg += '（接口未提供总数，不能确认是否完整）';
             toast(msg);
+            if (res.errors && res.errors.length && window.openModal) window.openModal('歌单导入结果', '', null, { staticText: res.errors.join('\n'), big: true });
           }, targetPl);
           return;
         }
@@ -1374,7 +1381,9 @@
             if (res.vip) msg += '（VIP 歌曲 ' + res.vip + ' 首未导入）';
             if (res.miss) msg += '（数据源受限，另有 ' + res.miss + ' 首未取到，稍后重导同一链接可补齐）';
             if (res.plFail && res.total) msg += '；' + res.plFail + ' 个歌单失败（可能私密/已失效/被拦截）';
+            if (res.incompleteUnknown) msg += '（接口未提供总数，不能确认是否完整）';
             toast(msg);
+            if (res.errors && res.errors.length && window.openModal) window.openModal('歌单导入结果', '', null, { staticText: res.errors.join('\n'), big: true });
           }, targetPl);
           return;
         }
