@@ -35,6 +35,23 @@
   if (panel && image) {
     const b = document.createElement('button'); b.className = 'more-item'; b.id = 'private-image'; b.type = 'button'; b.dataset.mcat = 'chat';
     b.innerHTML = '<span class="mi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><span>图片</span>';
-    b.addEventListener('click', () => image.click()); panel.prepend(b);
+    panel.prepend(b);
+    // Keep the native file input on the visible entry, not the hidden legacy button.
+    const picker = document.getElementById('chat-img-pick');
+    const surface = picker && window.mochiFilePickSurface
+      ? window.mochiFilePickSurface(b, { id: 'private-chat-img-tap', accept: 'image/*', multiple: true, owner: picker })
+      : null;
+    if (surface) {
+      surface.addEventListener('click', e => e.stopPropagation());
+      surface.addEventListener('change', () => {
+        const morePanel = document.getElementById('chat-more-panel');
+        if (morePanel) morePanel.hidden = true;
+      });
+    }
+    b.addEventListener('click', e => {
+      e.stopPropagation();
+      if (picker && window.mochiFilePickFire) window.mochiFilePickFire(picker);
+      else image.click();
+    });
   }
 })();
