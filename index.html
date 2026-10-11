@@ -10949,6 +10949,24 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 .private-dialog-behind { visibility:hidden!important; pointer-events:none!important; }
 #chat-back,#emoji-close,#batch-close,#voice-close,#tc-mask-close,#modal-close,#chat-search-close { min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; }
 #page-setting #set-tabs[hidden],#page-setting .set-group[hidden] { display:none!important; }
+#page-chat .msg-time { display:none!important; }
+#page-chat .msg-time-divider { display:flex!important; justify-content:center; margin:18px 0 12px; font-size:12px; color:#888; }
+.private-date-entry { min-height:44px; border:0; border-radius:8px; background:transparent; color:inherit; font:inherit; margin:0 14px; }
+.private-date-page { display:flex; flex-direction:column; padding:0!important; min-height:0; background:var(--private-bottom-bg,#fff); color:var(--private-ink,#222); }
+.private-date-page[hidden] { display:none!important; }
+.private-date-head { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; text-align:center; padding:8px 12px; border-bottom:1px solid #ddd; }
+.private-date-page button { font:inherit; color:inherit; border:0; background:transparent; min-height:44px; }
+.private-date-head button { font-size:28px; }
+.private-date-controls { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:8px 18px; }
+.private-date-controls input { font:inherit; color:inherit; background:transparent; border:0; min-height:44px; min-width:0; max-width:70%; }
+.private-date-week,.private-date-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); text-align:center; padding:0 10px; }
+.private-date-week { color:#999; padding-top:8px; padding-bottom:12px; border-bottom:1px solid #eee; }
+.private-date-months { flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; }
+.private-date-months h3 { font-size:16px; font-weight:400; color:#999; padding:0 18px; margin:20px 0 10px; }
+.private-date-grid button { min-width:0; height:52px; font-size:18px; }
+.private-date-grid button:disabled { color:#aaa; opacity:.6; }
+.private-date-grid .private-date-today { color:#0a9754; font-weight:600; }
+.private-date-status { font-size:12px; text-align:center; color:#888; margin:12px; }
 
 #page-outfit{padding:0;background:var(--private-bg);color:var(--private-ink);min-height:0}
 #page-outfit[hidden]{display:none!important}

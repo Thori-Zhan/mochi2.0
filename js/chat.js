@@ -2588,7 +2588,7 @@ const dayGap = Math.round((dayOf(now) - dayOf(d)) / 86400000);
 if (dayGap <= 0) return hm;
 if (dayGap === 1) return '昨天 ' + hm;
 if (d.getFullYear() === now.getFullYear()) return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + hm;
-return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + hm;
 }
 let chatVoiceAudio = null;
 let chatVoiceBtn = null;
@@ -3251,6 +3251,7 @@ const WINDOW_MAX = 400;   // v3.10.x：增量渲染窗口硬上限（含上下�
 const LOAD_STEP = 100;    // 向上滚动每次加载的条数
 const TOP_THRESHOLD = 150;// scrollTop 小于此值触发向上加载（px）
 const JUMP_VIEW = 30;     // 搜索跳转时目标索引上方预留的余量
+let privateDateBrowsing = false;
 let renderStart = 0;      // 渲染窗口起点（msgs 下标）；0 = 全量
 let renderEnd = 0;        // v3.10.x：渲染窗口终点（msgs 下标，开区间）；增量裁剪/恢复用
 let windowRenderedN = 0;
@@ -3335,18 +3336,20 @@ window.__chatWinRing = function () {
 return { backs: chatWinRingBacks, progPx: chatWinRingProgPx, ring: chatWinRingArr.slice(-8), cur: chatWinRingSnap() };
 }
 const TIME_DIVIDER_GAP = 5 * 60 * 1000;
-function maybeInsertDivider(idx) {
-if (store.get('cs-time-style') !== 'divider') return;
+function maybeInsertDivider(idx, force) {
 if (idx < 0 || idx >= msgs.length) return;
 const cur = msgs[idx];
 if (!cur || !cur.ts) return;
-if (idx > 0) {
+if (idx > 0 && idx !== renderStart && !force) {
 const prev = msgs[idx - 1];
 if (!prev || !prev.ts) return;
-if (cur.ts - prev.ts < TIME_DIVIDER_GAP) return;
+const a = new Date(cur.ts), b = new Date(prev.ts);
+if (cur.ts - prev.ts < TIME_DIVIDER_GAP && a.toDateString() === b.toDateString()) return;
 }
+if (!batchRendering) privateRefreshDateLabels();
 const d = document.createElement('div');
 d.className = 'msg-time-divider';
+d.dataset.privateTs = cur.ts;
 d.innerHTML = '<span>' + timeDividerText(cur.ts) + '</span>';
 if (batchDefer && idx >= batchDefer.len) { batchDefer.q.push(d); return; }
 (appendTarget || body).appendChild(d);
@@ -5312,11 +5315,18 @@ if (renderStart > 0 && msgs.length - renderStart > WINDOW_MAX &&
 (rec.side === 'out' || chatNearBottom())) {
 trimWindowTopQuiet(RENDER_MAX);
 }
-maybeInsertDivider(msgs.length - 1);
-const el = renderMsg(rec);
+const privateHoldIncoming = privateDateBrowsing && renderEnd < len && rec.side !== 'out';
+let el;
+if (privateHoldIncoming) {
+const previousTarget=appendTarget;appendTarget=document.createDocumentFragment();
+try { el=renderMsg(rec); } finally { appendTarget=previousTarget; }
+} else if (privateDateBrowsing && renderEnd < len && rec.side === 'out') {
+privateDateBrowsing=false;renderStart=Math.max(0,msgs.length-RENDER_MAX);chatPinnedBottom=true;
+renderWindow(false,false,true);el=body.querySelector('[data-idx="'+(msgs.length-1)+'"]');
+} else { maybeInsertDivider(msgs.length - 1);el=renderMsg(rec); }
 if (renderEnd >= msgs.length - 1) renderEnd = msgs.length;
 try {
-if (!batchRendering && el) {
+if (!batchRendering && el && !privateHoldIncoming) {
 windowRenderedN = Number(el.dataset.idx) + 1;
 windowStale = false;
 chatWinKeysSync(); // #1010：增量追加到新尾，身份凭据同步（否则下次收尾判不出前缀）
@@ -9648,6 +9658,53 @@ try { if (!chatRebased && chatColdHead.length) chatRebaseCold(); } catch (e) {}
 const all = window.getChatMsgs ? window.getChatMsgs() : msgs;
 return Array.isArray(all) ? all : msgs;
 }
+window.privateChatDateIndex = function () {
+loadMsgs();
+chatColdEnsureHydrated();
+const source = window.getChatMsgs ? window.getChatMsgs() : msgs;
+const counts = Object.create(null);
+source.forEach(rec => {
+if (!rec || !rec.ts) return;
+const d = new Date(rec.ts); if (!Number.isFinite(d.getTime())) return;
+const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+counts[key] = (counts[key] || 0) + 1;
+});
+return { counts, loading: !chatAuthSettled() || !chatColdDone };
+};
+window.privateChatJumpDate = function (day) {
+if (!chatColdDone || !chatAuthSettled()) return false;
+const source = chatSearchSource();
+const idx = source.findIndex(rec => {
+if (!rec || !rec.ts) return false;
+const d = new Date(rec.ts);
+return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') === day;
+});
+if (idx < 0 || batchRendering) return false;
+const start = Math.max(0, idx - 10), end = Math.min(msgs.length, start + 120);
+const frag = document.createDocumentFragment();
+unpinChatAndAnchor(); collectInplaceDrafts();
+privateDateBrowsing=true;
+batchRendering = true; appendTarget = frag; appendAvatarBatch(true);
+try {
+for (let i=start;i<end;i++) { try { maybeInsertDivider(i,i===start); renderMsg(msgs[i],i); } catch(e) { chatRenderIncident('date-jump-record',i,1); } }
+} finally { appendAvatarBatch(false); appendTarget=null; batchRendering=false; }
+body.replaceChildren(frag);
+renderStart=start;renderEnd=end;windowRenderedN=msgs.length;
+windowRenderedPrefix=window.activePrefix();windowRenderedNicks=chatNickSig();windowRenderedSrcTags=srcTagSig();windowRenderedLite=null;windowStale=false;chatWinKeysSync();
+restoreInplaceDrafts();
+const target=body.querySelector('[data-idx="'+idx+'"]');
+if(!target)return false;
+body.scrollTop=Math.max(0,target.offsetTop-body.offsetTop-12);
+suppressScrollUntil=Date.now()+300;
+target.classList.add('highlight');setTimeout(()=>target.classList.remove('highlight'),2200);
+return true;
+};
+function privateRefreshDateLabels() {
+body?.querySelectorAll('.msg-time-divider[data-private-ts]').forEach(el=>{const span=el.querySelector('span');if(span)span.textContent=timeDividerText(Number(el.dataset.privateTs));});
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)privateRefreshDateLabels();});
+const privateChatPage=document.getElementById('page-chat');
+if(privateChatPage)new MutationObserver(()=>{if(!privateChatPage.hidden)privateRefreshDateLabels();}).observe(privateChatPage,{attributes:true,attributeFilter:['hidden']});
 let chatSearchRetryT = null;
 let chatSearchRetries = 0;
 function runChatSearch() {
