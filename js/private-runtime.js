@@ -1,4 +1,4 @@
-// No splash, forced notice, animation or automatic notice request.
+// No splash, forced notice, animation or remote announcement request.
 (function () {
   const status = document.createElement('div');
   status.id = 'private-startup-status'; status.role = 'status';
@@ -54,6 +54,143 @@
       else image.click();
     });
   }
+})();
+
+// Approved appearance and time preferences. These keys never rewrite chat records.
+(function () {
+  const root=document.documentElement;
+  const preferences=window.xyStore?.('xy-home-v2');
+  const read=(key,fallback)=>{try{return preferences?.get(key)||localStorage.getItem('xy-home-v2:'+key)||fallback;}catch(e){return fallback;}};
+  const write=(key,value)=>{try{if(preferences)preferences.set(key,value);else localStorage.setItem('xy-home-v2:'+key,value);return true;}catch(e){window.toast?.('设置未保存：本机存储不可用');return false;}};
+  const palettes={
+    blue:{name:'雾蓝茉莉',light:['#f1f5f9','#ffffff','#263d50','#6b8194','#527c9f','#e1edf7','#dce6ee','#d5e7f5'],dark:['#1c2732','#273643','#e5eff8','#a3b9ca','#99c3e3','#314b61','#3c5061','#3b5c75']},
+    peach:{name:'奶油杏桃',light:['#faf4ed','#fffcf8','#554236','#8c7565','#ad7054','#f4e4d5','#ebded1','#f2d6be'],dark:['#302820','#3c3229','#f6e8d9','#c6b19e','#dfab86','#554034','#5d4b3e','#704d38']},
+    red:{name:'石榴红',light:['#f6f1e7','#fffaf0','#39201e','#806653','#801d23','#eee2ca','#ddcfb5','#801d23'],dark:['#120d0e','#241316','#f4e9d1','#c2ac97','#d14a3c','#3b191d','#51262a','#701c24']}
+  };
+  let preset=read('private-theme-preset','blue');if(!palettes[preset])preset='blue';
+  let timeMode=read('private-time-mode','demand');if(!['demand','all','simple'].includes(timeMode))timeMode='demand';
+  root.dataset.privateTime=timeMode;
+  const appearance=document.querySelector('#page-setting .them-sec[data-sec="basic"]');
+  const chatSettings=document.querySelector('#page-setting .them-sec[data-sec="chat"]');
+  const group=document.createElement('div');group.className='set-group glass private-presets';
+  group.innerHTML='<h3>主题预设</h3><div class="private-preset-list"></div><p>配色与日夜模式独立，切换配色不改变当前模式。</p>';
+  const quick=document.createElement('button');quick.type='button';quick.id='private-theme-toggle';quick.className='ch-settings';
+  document.getElementById('chat-settings-btn')?.before(quick);
+  function apply(){
+    const dark=root.getAttribute('data-theme')==='dark';const p=palettes[preset][dark?'dark':'light'];
+    root.dataset.privatePreset=preset;
+    ['bg','panel','ink','muted','accent','soft','line','sent'].forEach((key,i)=>root.style.setProperty('--private-'+key,p[i]));
+    const aliases={'page-bg':0,'page-bg-grad':0,'phone-bg-a':0,'phone-bg-b':0,'bg-a':0,'bg-b':0,'card-bg':1,'card-bg-97':1,'glass-bg':1,'input-bg':1,'ink':2,'soft-ink':2,'muted':3,'hint-ink':3,'line':6,'card-border':6,'input-border':6,'btn-bg':4,'btn-ink':dark?'#17212b':'#ffffff'};
+    Object.entries(aliases).forEach(([key,value])=>root.style.setProperty('--'+key,typeof value==='number'?p[value]:value));
+    root.style.setProperty('--private-bottom-bg',p[1]);root.style.setProperty('--private-blue',p[4]);
+    quick.textContent=dark?'☀':'☾';quick.setAttribute('aria-label',dark?'切换日间主题':'切换夜间主题');quick.title=quick.getAttribute('aria-label');
+    group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===preset)));
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=p[0];
+  }
+  Object.entries(palettes).forEach(([id,p])=>{
+    const b=document.createElement('button');b.type='button';b.dataset.preset=id;b.className='private-preset';
+    const swatch=document.createElement('span');swatch.className='private-preset-swatch';swatch.style.background=p.light[0];swatch.style.borderColor=p.light[4];
+    const label=document.createElement('span');label.textContent=p.name;b.append(swatch,label);
+    b.addEventListener('click',()=>{if(write('private-theme-preset',id)){preset=id;apply();}});group.querySelector('.private-preset-list').appendChild(b);
+  });
+  appearance?.prepend(group);
+  quick.addEventListener('click',()=>{
+    const next=root.getAttribute('data-theme')==='dark'?'light':'dark';if(!write('theme-mode',next))return;
+    if(next==='dark')root.setAttribute('data-theme','dark');else root.removeAttribute('data-theme');
+    const val=document.getElementById('theme-mode-val');if(val)val.textContent=next==='dark'?'已开启':'关闭';apply();
+  });
+  new MutationObserver(apply).observe(root,{attributes:true,attributeFilter:['data-theme']});apply();
+  const times=document.createElement('fieldset');times.className='set-group glass private-time-options';
+  const legend=document.createElement('legend');legend.textContent='消息时间显示';times.appendChild(legend);
+  for(const [value,label,description] of [['demand','按需查看','点击普通文字气泡，查看头像下方的时间；再次点击收起。'],['all','始终显示','每条普通消息都在头像下方显示时间。'],['simple','简洁模式','只显示聊天中间的日期与时间标记。']]){
+    const row=document.createElement('label');const radio=document.createElement('input');radio.type='radio';radio.name='private-time-mode';radio.value=value;radio.checked=timeMode===value;
+    const text=document.createElement('span');const title=document.createElement('strong');title.textContent=label;const desc=document.createElement('small');desc.textContent=description;text.append(title,desc);row.append(radio,text);times.appendChild(row);
+    radio.addEventListener('change',()=>{if(write('private-time-mode',value)){timeMode=value;root.dataset.privateTime=value;document.querySelectorAll('#chat-body .private-time-open').forEach(m=>m.classList.remove('private-time-open'));}});
+  }
+  chatSettings?.prepend(times);
+  // Delegation also works for new messages and virtualized history, without rescanning.
+  const body=document.getElementById('chat-body');
+  function toggleTime(target){
+    if(timeMode!=='demand'||target.closest('button,a,input,textarea,video,audio,img,[data-act],.msg-poke-seg,.msg-quote'))return;
+    const bubble=target.closest('.msg-bubble'),msg=bubble?.closest('.msg');if(msg?.querySelector('.msg-time'))msg.classList.toggle('private-time-open');
+  }
+  body?.addEventListener('click',e=>toggleTime(e.target));
+  body?.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('msg-bubble')){e.preventDefault();toggleTime(e.target);}});
+  window.mochiOnDataReady?.(()=>{
+    const savedPreset=read('private-theme-preset','blue');if(palettes[savedPreset])preset=savedPreset;
+    const savedTime=read('private-time-mode','demand');if(['demand','all','simple'].includes(savedTime))timeMode=savedTime;
+    root.dataset.privateTime=timeMode;times.querySelectorAll('input').forEach(n=>n.checked=n.value===timeMode);apply();
+  });
+})();
+
+// Complete icon directory delegates to the original app entries, including hidden ones.
+(function () {
+  const home=document.getElementById('page-phone'),phone=document.querySelector('.phone'),grid=home?.querySelector('.app-grid');if(!grid||!phone)return;
+  const page=document.createElement('section');page.id='page-private-functions';page.className='page private-function-page';page.hidden=true;
+  page.innerHTML='<header class="private-date-head"><button type="button" aria-label="返回首页">‹</button><strong>全部功能</strong><span></span></header><div class="private-function-content"></div>';
+  phone.insertBefore(page,document.querySelector('.tabbar'));
+  const entry=document.createElement('button');entry.id='private-all-functions';entry.className='private-all-functions';entry.type='button';entry.textContent='全部功能 ›';grid.after(entry);
+  const sections=[['陪伴与互动',['chat','home','mail','feed','divination','music','drift','market','giftbox']],['记录与档案',['interact','memo-arc','my-arc','note','calendar','memory','outfit','period']],['日常与回顾',['stats','checkin','eat','decision']]];
+  function render(){
+    const content=page.querySelector('.private-function-content');content.replaceChildren();
+    const apps=[...grid.querySelectorAll(':scope > .app')],used=new Set();
+    function add(title,list){
+      if(!list.length)return;const h=document.createElement('h3');h.textContent=title;const g=document.createElement('div');g.className='private-function-grid';content.append(h,g);
+      list.forEach(app=>{used.add(app);const b=document.createElement('button');b.type='button';b.className='private-function-item';
+        const icon=app.querySelector('.app-ico')?.cloneNode(true);if(icon){icon.removeAttribute('id');icon.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));b.appendChild(icon);}
+        const label=document.createElement('span');label.textContent=app.querySelector('.app-name')?.textContent||app.dataset.app;b.appendChild(label);
+        b.addEventListener('click',()=>{document.querySelector('.tabbar [data-page="page-phone"]')?.click();app.click();});g.appendChild(b);
+      });
+    }
+    sections.forEach(([title,ids])=>add(title,apps.filter(a=>ids.includes(a.dataset.app))));add('其他功能',apps.filter(a=>!used.has(a)));
+  }
+  entry.addEventListener('click',()=>{render();document.querySelectorAll('.phone > .page').forEach(p=>p.hidden=p!==page);page.hidden=false;});
+  page.querySelector('header button').addEventListener('click',()=>document.querySelector('.tabbar [data-page="page-phone"]')?.click());
+})();
+
+// Versioned local release notes: dismissible, no network, no compulsory acknowledgement.
+(function () {
+  const VERSION='2026-10-11-ui-1';window.__privateRelease=VERSION;
+  const releases=[
+    {id:VERSION,date:'2026年10月11日',items:[['主题预设','外观里新增雾蓝茉莉、奶油杏桃、石榴红，各自支持日间与夜间配色。'],['日夜切换','聊天顶部保留原来的名字与操作，只增加一个日夜切换按钮。'],['消息时间','聊天设置新增按需、始终、简洁三种显示方式，中间日期标记始终保留。'],['全部功能','首页新增分组图标入口，隐藏的功能也能从这里打开，不删除记录。'],['更新合集','设置 → 数据可查看更新公告；本版可选择下次更新前不再弹出。']]},
+    {id:'previous-date',date:'此前更新',items:[['日期查找','聊天支持按日期寻找本机历史消息。'],['设置返回','点击底部设置图标可回到设置主页。'],['首页整理','长按首页空白处，或从外观设置进入，调整入口顺序与显示。']]}
+  ];
+  const mask=document.createElement('div');mask.id='private-release-mask';mask.className='private-release-mask';mask.hidden=true;
+  mask.innerHTML='<section role="dialog" aria-modal="true" aria-labelledby="private-release-title"><header><h2 id="private-release-title">更新公告</h2><button type="button" aria-label="关闭更新公告">×</button></header><div class="private-release-content"></div><label class="private-release-mute"><input type="checkbox">下次更新前不再弹出</label><button type="button" class="private-release-done">知道了</button></section>';
+  document.body.appendChild(mask);let returnFocus=null;let muted='';const noticeStore=window.xyStore?.('xy-home-v2'),key='private-release-muted';
+  function readMuted(){try{return noticeStore?.get(key)||localStorage.getItem('xy-home-v2:'+key)||'';}catch(e){return '';}}
+  muted=readMuted();
+  function show(archive=false){
+    returnFocus=document.activeElement;const content=mask.querySelector('.private-release-content');content.replaceChildren();
+    mask.querySelector('h2').textContent=archive?'更新公告合集':'更新公告';
+    releases.forEach((release,index)=>{
+      const details=document.createElement('details');details.open=index===0;const summary=document.createElement('summary');summary.textContent=release.date;details.appendChild(summary);
+      const ul=document.createElement('ul');release.items.forEach(([title,desc])=>{const li=document.createElement('li'),strong=document.createElement('strong');strong.textContent=title+'：';li.append(strong,document.createTextNode(desc));ul.appendChild(li);});details.appendChild(ul);content.appendChild(details);
+    });
+    mask.querySelector('input').checked=muted===VERSION;mask.hidden=false;
+    document.querySelector('.phone')?.setAttribute('inert','');
+    mask.querySelector('header button').focus();
+  }
+  function close(){
+    const checked=mask.querySelector('input').checked;try{muted=checked?VERSION:'';if(noticeStore)noticeStore.set(key,muted);else localStorage.setItem('xy-home-v2:'+key,muted);}catch(e){window.toast?.('公告偏好未保存');}
+    mask.hidden=true;document.querySelector('.phone')?.removeAttribute('inert');returnFocus?.focus?.();
+  }
+  mask.querySelector('header button').addEventListener('click',close);mask.querySelector('.private-release-done').addEventListener('click',close);
+  mask.addEventListener('click',e=>{if(e.target===mask)close();});
+  mask.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){e.preventDefault();close();}
+    if(e.key==='Tab'){const nodes=[...mask.querySelectorAll('button,input,summary')].filter(n=>n.getClientRects().length);const i=nodes.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();nodes.at(-1)?.focus();}else if(!e.shiftKey&&i===nodes.length-1){e.preventDefault();nodes[0]?.focus();}}
+  });
+  const data=document.querySelector('#page-setting .them-sec[data-sec="tools"]');const entry=document.createElement('button');entry.type='button';entry.className='private-settings-category';entry.textContent='更新公告合集';entry.addEventListener('click',()=>show(true));data?.prepend(entry);
+  function maybeShow(){
+    muted=readMuted();
+    if(muted===VERSION||!window.__mochiDataReady||document.hidden)return;
+    // Don't stack on the app lock or another active dialog. Retry on the next gesture only.
+    if([...document.querySelectorAll('.modal-mask,.qa-mask,#tc-mask,[id*="applock"]')].some(n=>!n.hidden&&n.getClientRects().length&&getComputedStyle(n).display!=='none'))return;
+    show();document.removeEventListener('pointerup',maybeShow);
+  }
+  document.addEventListener('mochi-restore-done',maybeShow,{once:true});
+  document.addEventListener('pointerup',maybeShow);if(window.__mochiDataReady)maybeShow();
 })();
 
 // Calendar is a read-only view of existing local chat records. No history copies or writes.

@@ -10950,6 +10950,13 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 #chat-back,#emoji-close,#batch-close,#voice-close,#tc-mask-close,#modal-close,#chat-search-close { min-width:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; }
 #page-setting #set-tabs[hidden],#page-setting .set-group[hidden] { display:none!important; }
 #page-chat .msg-time { display:none!important; }
+html[data-private-time="all"] #page-chat .msg-time,
+html[data-private-time="demand"] #page-chat .private-time-open .msg-time { display:block!important; }
+html[data-private-time] #page-chat .msg-side { display:flex!important;flex-direction:column!important;align-items:center!important;position:relative!important; }
+html[data-private-time] #page-chat .msg-side .msg-time { position:static!important;transform:none!important;margin:4px 0 0!important;font-size:10px!important;line-height:1.3!important;white-space:nowrap; }
+/* Production messages already place the outgoing avatar last in DOM order. */
+#page-chat .msg-out { flex-direction:row!important; justify-content:flex-end!important; }
+#page-chat .msg-in { flex-direction:row!important; justify-content:flex-start!important; }
 #page-chat .msg-time-divider { display:flex!important; justify-content:center; margin:18px 0 12px; font-size:12px; color:#888; }
 .private-date-entry { min-height:44px; border:0; border-radius:8px; background:transparent; color:inherit; font:inherit; margin:0 14px; }
 .private-date-page { display:flex; flex-direction:column; padding:0!important; min-height:0; background:var(--private-bottom-bg,#fff); color:var(--private-ink,#222); }
@@ -10967,6 +10974,56 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
 .private-date-grid button:disabled { color:#aaa; opacity:.6; }
 .private-date-grid .private-date-today { color:#0a9754; font-weight:600; }
 .private-date-status { font-size:12px; text-align:center; color:#888; margin:12px; }
+
+/* Theme tokens affect appearance only. Keep the tested viewport/keyboard geometry. */
+html[data-private-preset] body,html[data-private-preset] .phone { background:var(--private-bg);color:var(--private-ink); }
+html[data-private-preset] .phone .page { color:var(--private-ink); }
+html[data-private-preset] #page-chat { background:var(--private-bg)!important; }
+html[data-private-preset] .phone .glass,html[data-private-preset] .phone .set-group,
+html[data-private-preset] .phone .app-ico,html[data-private-preset] .phone .deco-widget { background:var(--private-panel)!important;border-color:var(--private-line)!important;color:var(--private-ink)!important; }
+html[data-private-preset] .phone .app-name { color:var(--private-ink)!important; }
+html[data-private-preset] #page-chat .chat-head,html[data-private-preset] #page-chat .chat-input-row { background:var(--private-panel)!important;border-color:var(--private-line)!important;color:var(--private-ink)!important; }
+html[data-private-preset] #page-chat .chat-input { background:var(--private-bg)!important;color:var(--private-ink)!important; }
+html[data-private-preset] #page-chat .msg-in .msg-bubble { background:var(--private-panel)!important;color:var(--private-ink)!important; }
+html[data-private-preset] #page-chat .msg-out .msg-bubble { background:var(--private-sent)!important;color:var(--private-ink)!important; }
+html[data-private-preset="red"] #page-chat .msg-out .msg-bubble { color:#fff1d8!important; }
+html[data-private-preset] #page-chat .msg-time,html[data-private-preset] #page-chat .msg-time-divider { color:var(--private-muted)!important; }
+html[data-private-preset] #page-chat #chat-send { background:var(--private-accent);color:var(--private-panel); }
+html[data-private-preset] #page-chat .chat-head svg { stroke:currentColor; }
+#private-theme-toggle { display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;font-size:25px;color:var(--private-accent); }
+/* The home backup reminder must not cover the chat header's touch targets. */
+html:not(:has(#page-phone:not([hidden]))) #backup-remind-bar { display:none!important; }
+.private-presets,.private-time-options { padding:16px;min-width:0; }
+.private-presets h3,.private-time-options legend { font-size:15px;font-weight:600; }
+.private-presets p,.private-time-options small { display:block;font-size:12px;color:var(--private-muted);margin-top:5px; }
+.private-preset-list { display:flex;gap:8px;margin-top:12px; }
+.private-preset { flex:1;min-width:0;border:1px solid var(--private-line);border-radius:12px;background:var(--private-bg);color:var(--private-ink);padding:12px 4px;font:inherit;font-size:12px; }
+.private-preset[aria-pressed="true"] { border-color:var(--private-accent);box-shadow:0 0 0 1px var(--private-accent); }
+.private-preset-swatch { display:block;width:30px;height:30px;border:5px solid;border-radius:50%;margin:0 auto 8px; }
+.private-time-options label { display:flex;align-items:center;gap:12px;min-height:60px;padding:9px 0; }
+.private-time-options input { accent-color:var(--private-accent);width:18px;height:18px;flex-shrink:0; }
+.private-all-functions { display:block;width:100%;min-height:44px;border:0;background:transparent;color:var(--private-accent);font:inherit;margin:8px 0 18px; }
+.private-function-page { padding:0!important;background:var(--private-bg);min-height:0;display:flex;flex-direction:column; }
+.private-function-page[hidden] { display:none!important; }
+.private-function-content { overflow:auto;min-height:0;padding:18px; }
+.private-function-content h3 { margin:8px 0 18px;font-size:15px; }
+.private-function-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 8px;margin-bottom:28px; }
+.private-function-item { border:0;background:transparent;color:inherit;font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0; }
+.private-function-item .app-ico { margin:0;width:54px;height:54px; }
+.private-release-mask { position:fixed;inset:0;z-index:99990;background:#0007;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom)); }
+.private-release-mask[hidden] { display:none!important; }
+.private-release-mask section { width:min(100%,420px);max-height:85dvh;display:flex;flex-direction:column;padding:20px;background:var(--private-panel);color:var(--private-ink);border-radius:22px;box-shadow:0 12px 50px #0003; }
+.private-release-mask header { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+.private-release-mask h2 { font-size:20px; }
+.private-release-mask button { min-height:44px;min-width:44px;border:0;background:transparent;color:inherit;font:inherit; }
+.private-release-mask header button { font-size:26px; }
+.private-release-content { overflow:auto;min-height:0;overscroll-behavior:contain; }
+.private-release-content summary { padding:14px 0;color:var(--private-muted);font-size:13px; }
+.private-release-content ul { list-style:none; }
+.private-release-content li { margin-bottom:12px;font-size:14px;line-height:1.7; }
+.private-release-mute { display:flex;align-items:center;gap:10px;min-height:48px;font-size:13px; }
+.private-release-mute input { accent-color:var(--private-accent); }
+.private-release-mask .private-release-done { background:var(--private-accent);color:var(--private-panel);border-radius:12px; }
 
 #page-outfit{padding:0;background:var(--private-bg);color:var(--private-ink);min-height:0}
 #page-outfit[hidden]{display:none!important}
@@ -12140,7 +12197,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",san
       
       
       
-      <div class="ver">Mochi 字卡传讯 private-1</div>
+      <div class="ver">Mochi 字卡传讯 2026-10-11-ui-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       
