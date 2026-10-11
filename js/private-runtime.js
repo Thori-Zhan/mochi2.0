@@ -88,7 +88,7 @@
   const cats = [['chat','聊天','回复方式 · 通话 · 音效'],['basic','外观','深色模式 · 手机桌面美化'],['tools','数据','备份 · 恢复 · 本机存储'],['system','自动互动','互动设置 · 后台运行 · 通知']];
   if (system) {
     const shortcut=document.createElement('button');shortcut.type='button';shortcut.className='private-settings-category';shortcut.textContent='主动消息、送礼与心意币设置';
-    shortcut.addEventListener('click',()=>{document.querySelector('.tabbar [data-page="page-chat"]')?.click();document.getElementById('chat-settings-btn')?.click();});system.prepend(shortcut);
+    shortcut.addEventListener('click',()=>{document.getElementById('row-general')?.click();});system.prepend(shortcut);
   }
   function show(name) {
     menu.hidden = !!name; back.hidden = !name;
