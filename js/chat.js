@@ -9699,6 +9699,16 @@ suppressScrollUntil=Date.now()+300;
 target.classList.add('highlight');setTimeout(()=>target.classList.remove('highlight'),2200);
 return true;
 };
+window.privateChatIsEarlierWindow = function () { return renderEnd < msgs.length; };
+window.privateChatReturnLatest = function () {
+if (batchRendering) return false;
+privateDateBrowsing=false;
+renderStart=Math.max(0,msgs.length-RENDER_MAX);
+chatPinnedBottom=true;
+renderWindow(false,false,true);
+body.scrollTop=body.scrollHeight;
+return true;
+};
 function privateRefreshDateLabels() {
 body?.querySelectorAll('.msg-time-divider[data-private-ts]').forEach(el=>{const span=el.querySelector('span');if(span)span.textContent=timeDividerText(Number(el.dataset.privateTs));});
 }

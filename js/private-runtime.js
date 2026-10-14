@@ -63,7 +63,7 @@
   const read=(key,fallback)=>{try{return preferences?.get(key)||localStorage.getItem('xy-home-v2:'+key)||fallback;}catch(e){return fallback;}};
   const write=(key,value)=>{try{if(preferences)preferences.set(key,value);else localStorage.setItem('xy-home-v2:'+key,value);return true;}catch(e){window.toast?.('设置未保存：本机存储不可用');return false;}};
   const palettes={
-    blue:{name:'雾蓝茉莉',light:['#f1f5f9','#ffffff','#263d50','#6b8194','#527c9f','#e1edf7','#dce6ee','#d5e7f5'],dark:['#1c2732','#273643','#e5eff8','#a3b9ca','#99c3e3','#314b61','#3c5061','#3b5c75']},
+    blue:{name:'透白浅青',light:['#f6fafb','#ffffff','#36505d','#8a9da5','#719aaa','#eef5f6','#e0ebee','#dcebf0'],dark:['#101010','#272727','#ededeb','#a4a4a0','#d9d9d5','#343434','#404040','#393939']},
     peach:{name:'奶油杏桃',light:['#faf4ed','#fffcf8','#554236','#8c7565','#ad7054','#f4e4d5','#ebded1','#f2d6be'],dark:['#302820','#3c3229','#f6e8d9','#c6b19e','#dfab86','#554034','#5d4b3e','#704d38']},
     red:{name:'石榴红',light:['#f6f1e7','#fffaf0','#39201e','#806653','#801d23','#eee2ca','#ddcfb5','#801d23'],dark:['#120d0e','#241316','#f4e9d1','#c2ac97','#d14a3c','#3b191d','#51262a','#701c24']}
   };
@@ -83,7 +83,7 @@
     const aliases={'page-bg':0,'page-bg-grad':0,'phone-bg-a':0,'phone-bg-b':0,'bg-a':0,'bg-b':0,'card-bg':1,'card-bg-97':1,'glass-bg':1,'input-bg':1,'ink':2,'soft-ink':2,'muted':3,'hint-ink':3,'line':6,'card-border':6,'input-border':6,'btn-bg':4,'btn-ink':dark?'#17212b':'#ffffff'};
     Object.entries(aliases).forEach(([key,value])=>root.style.setProperty('--'+key,typeof value==='number'?p[value]:value));
     root.style.setProperty('--private-bottom-bg',p[1]);root.style.setProperty('--private-blue',p[4]);
-    quick.textContent=dark?'☀':'☾';quick.setAttribute('aria-label',dark?'切换日间主题':'切换夜间主题');quick.title=quick.getAttribute('aria-label');
+    quick.innerHTML=dark?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1 1M18 18l1 1M5 19l1-1M18 6l1-1"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 15.5A8 8 0 0 1 8.5 5 8 8 0 1 0 19 15.5z"/></svg>';quick.setAttribute('aria-label',dark?'切换日间主题':'切换夜间主题');quick.title=quick.getAttribute('aria-label');
     group.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preset===preset)));
     const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=p[0];
   }
@@ -150,9 +150,10 @@
 
 // Versioned local release notes: dismissible, no network, no compulsory acknowledgement.
 (function () {
-  const VERSION='2026-10-11-ui-1';window.__privateRelease=VERSION;
+  const VERSION='2026-10-15-ui-2';window.__privateRelease=VERSION;
   const releases=[
-    {id:VERSION,date:'2026年10月11日',items:[['主题预设','外观里新增雾蓝茉莉、奶油杏桃、石榴红，各自支持日间与夜间配色。'],['日夜切换','聊天顶部保留原来的名字与操作，只增加一个日夜切换按钮。'],['消息时间','聊天设置新增按需、始终、简洁三种显示方式，中间日期标记始终保留。'],['全部功能','首页新增分组图标入口，隐藏的功能也能从这里打开，不删除记录。'],['更新合集','设置 → 数据可查看更新公告；本版可选择下次更新前不再弹出。']]},
+    {id:VERSION,date:'2026年10月15日',items:[['首页布局','头像与居中情话合栏，取消相伴日期展示；八个常用入口包含所有功能。'],['首页播放器','封面、进度与上一首、播放、下一首、收藏、列表使用原音乐库。'],['外观','蓝色改为透白浅青，夜间采用黑灰柔光；杏桃与石榴红保留配色并增加柔光质感。'],['设置整理','字卡用途分区；聊天设置合并为四个折叠分组，一般说明可点 i 查看。'],['返回最新','翻看聊天历史时显示向下箭头，可回到最新聊天；日夜图标切换预设后保持可见。']]},
+    {id:'2026-10-11-ui-1',date:'2026年10月11日',items:[['主题预设','新增三套日夜主题。'],['消息时间','新增按需、始终、简洁三种时间模式。'],['功能目录与公告','新增全部功能入口与更新公告合集。']]},
     {id:'previous-date',date:'此前更新',items:[['日期查找','聊天支持按日期寻找本机历史消息。'],['设置返回','点击底部设置图标可回到设置主页。'],['首页整理','长按首页空白处，或从外观设置进入，调整入口顺序与显示。']]}
   ];
   const mask=document.createElement('div');mask.id='private-release-mask';mask.className='private-release-mask';mask.hidden=true;
