@@ -229,6 +229,12 @@
   });
   let viewY = 0, viewM = -1; // 0=当前月
   let selDate = todayStr();
+  document.addEventListener('mochi-quote-history-saved', function () {
+    if (!page.hidden) {
+      const parts = selDate.split('-');
+      renderDayNotes(new Date(+parts[0], +parts[1] - 1, +parts[2]), selDate > todayStr());
+    }
+  });
   function dayRecordSet(y, m) {
     const set = new Set();
     const daysInMonth = new Date(y, m + 1, 0).getDate();

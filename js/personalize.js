@@ -6825,6 +6825,10 @@ try {
       if (window.exitDecor) window.exitDecor();
     }, true);
   }
+  function fishToday() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
   function updateFishDays() {}
   function migrateFishLogGlobal() {}
   (function () {
@@ -7302,6 +7306,8 @@ bindAdjDrag(headTop, false); // #1534：拖标题行移动面板（与桌面美�
       if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { if (panel) applyAdjPos(); });
     } catch (e) {}
   })();
+  const quoteHistoryWaiting = new Set();
+  const quoteHistoryConfirmed = new Set();
   function renderQuoteOfDay() {
     const el = document.getElementById('love-quote');
     if (!el) return;
@@ -7318,15 +7324,61 @@ bindAdjDrag(headTop, false); // #1534：拖标题行移动面板（与桌面美�
     try {
       if (!window.xyBigWriteHold || !window.xyBigWriteHold(store, 'quote-history')) {
         const today = fishToday();
-        const list = JSON.parse(store.get('quote-history') || '[]');
-        if (!list.length || list[0].date !== today) {
+        if (!window.__mochiDataReady) return;
+        const raw = store.get('quote-history');
+        const owner = window.activePrefix();
+        if (raw === null && window.idbHydrateKey && !quoteHistoryConfirmed.has(owner)) {
+          if (!quoteHistoryWaiting.has(owner)) {
+            quoteHistoryWaiting.add(owner);
+            const keys = [owner + ':quote-history'];
+            if (owner === 'xy-home-v2:default') keys.push('xy-home-v2:quote-history');
+            Promise.all(keys.map(key => window.idbHydrateKey(key))).then(results => {
+              quoteHistoryWaiting.delete(owner);
+              if (!results.every(result => result === true || result === null)) return;
+              quoteHistoryConfirmed.add(owner);
+              if (window.activePrefix() === owner) renderQuoteOfDay();
+            }, () => quoteHistoryWaiting.delete(owner));
+          }
+          return;
+        }
+        const list = raw === null ? [] : JSON.parse(raw);
+        if (!Array.isArray(list)) return;
+        if (!list.some(item => item && item.date === today)) {
           list.unshift({ date: today, text: text, ts: Date.now() });
           store.set('quote-history', JSON.stringify(list));
+          document.dispatchEvent(new Event('mochi-quote-history-saved'));
+        }
+      } else {
+        const owner = window.activePrefix();
+        if (!quoteHistoryWaiting.has(owner) && store.whenBigKeyBack) {
+          quoteHistoryWaiting.add(owner);
+          store.whenBigKeyBack('quote-history', function () {
+            quoteHistoryWaiting.delete(owner);
+            if (window.activePrefix() === owner) renderQuoteOfDay();
+          });
         }
       }
     } catch (e) {}
   }
   renderQuoteOfDay();
+  let quoteRefreshPending = false;
+  function scheduleDailyQuote() {
+    if (quoteRefreshPending || document.hidden) return;
+    quoteRefreshPending = true;
+    setTimeout(function () {
+      quoteRefreshPending = false;
+      renderQuoteOfDay();
+    }, 0);
+  }
+  document.addEventListener('visibilitychange', scheduleDailyQuote);
+  document.addEventListener('mochi-restore-done', function () {
+    quoteHistoryConfirmed.clear();
+    scheduleDailyQuote();
+  });
+  document.addEventListener('mochi-wrj-heal', scheduleDailyQuote);
+  window.addEventListener('pageshow', scheduleDailyQuote);
+  window.addEventListener('focus', scheduleDailyQuote);
+  document.querySelector('.tabbar [data-page="page-phone"]')?.addEventListener('click', scheduleDailyQuote);
   function relCat() {
     const v = store.get('rel-cat');
     return v === 'family' || v === 'friend' ? v : 'love';
