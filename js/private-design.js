@@ -1,3 +1,45 @@
+// Home geometry must not wait for IDB. Its stylesheet is already active while
+// restore runs; leaving the legacy structure in place creates a split grid.
+(function () {
+  function prepareHome() {
+    const home=document.getElementById('page-phone');
+    const deco=document.getElementById('deco-widget');
+    const quote=document.getElementById('love-quote')?.closest('.mini-card');
+    const grid=home?.querySelector('.app-grid');
+    const widget=document.getElementById('music-widget');
+    const all=document.getElementById('private-all-functions');
+    if(!home||!deco||!quote||!grid||!widget||!all)return false;
+    if(quote.parentNode!==deco)deco.append(quote);
+    const mini=home.querySelector('.mini-row');if(mini)mini.hidden=true;
+    for(const id of ['love-days','love-date']){const n=document.getElementById(id);if(n)n.hidden=true;}
+    const heart=home.querySelector('.deco-love');if(heart)heart.hidden=true;
+    if(widget.parentNode!==grid.parentNode||widget.nextElementSibling!==grid)grid.before(widget);
+    const ids=['chat','mail','feed','music','calendar','interact','memo-arc'];
+    grid.querySelectorAll('.app[data-app]').forEach(app=>{
+      const pos=ids.indexOf(app.dataset.app);
+      app.classList.toggle('preview-home-hidden',pos<0);
+      if(pos>=0)app.style.order=String(pos);
+    });
+    if(!grid.querySelector('.confirm-all')){
+      const entry=document.createElement('button');entry.className='app confirm-all';entry.type='button';
+      entry.innerHTML='<div class="app-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><div class="app-name">所有功能</div>';
+      entry.style.order='7';entry.onclick=()=>{all.click();document.querySelectorAll('.private-function-item').forEach(b=>{if(b.textContent==='所有功能')b.remove();});};grid.append(entry);
+    }
+    grid.querySelector('.confirm-all').classList.remove('preview-home-hidden');
+    all.classList.add('confirm-old-all');
+    document.querySelectorAll('.tabbar .private-tab-label').forEach(e=>e.hidden=true);
+    document.documentElement.setAttribute('data-private-home-ready','');
+    window.__privateHomeReady=true;
+    return true;
+  }
+  window.__privatePrepareHome=prepareHome;
+  prepareHome();
+  // The original desktop restorer may move existing nodes; reapply only DOM
+  // placement, never overwrite the saved layout or any personal data.
+  document.addEventListener('mochi-restore-done',prepareHome);
+  document.addEventListener('contact-switched',prepareHome);
+})();
+
 (function(){function start(){if(!window.__mochiDataReady){setTimeout(start,100);return}const root=document.documentElement;const grid=document.querySelector('#page-phone .app-grid');const apps=[...grid.querySelectorAll(':scope>.app')];const favorites=['chat','mail','feed','music','calendar','memo-arc','my-arc','interact'];apps.forEach(a=>a.classList.toggle('preview-home-hidden',!favorites.includes(a.dataset.app)));const all=document.getElementById('private-all-functions');if(all)all.textContent='所有功能  ›';
 const sheet=document.createElement('div');sheet.className='preview-help';sheet.hidden=true;sheet.innerHTML='<section><header><h2></h2><button aria-label="关闭说明">×</button></header><div class="preview-help-body"></div></section>';document.body.append(sheet);sheet.querySelector('button').onclick=()=>sheet.hidden=true;sheet.onclick=e=>{if(e.target===sheet)sheet.hidden=true};function help(title,content){sheet.querySelector('h2').textContent=title;sheet.querySelector('.preview-help-body').textContent=content;sheet.hidden=false}
 function explanations(scope){scope.querySelectorAll('.set-row,.gs-row').forEach(row=>{if(row.querySelector('.preview-info')||row.classList.contains('danger')||/clear|replace|清除|替换/.test(row.id))return;const hints=[...row.querySelectorAll('.hint,.sub,.set-desc,.desc,small')].filter(e=>e.textContent.trim());if(!hints.length)return;const content=hints.map(e=>e.textContent.trim()).join('\n\n');const title=row.querySelector('.label,.name')?.textContent||row.firstElementChild?.firstChild?.textContent||'功能说明';hints.forEach(e=>e.classList.add('preview-hint-hidden'));const info=document.createElement('button');info.type='button';info.className='preview-info';info.textContent='i';info.onclick=e=>{e.stopPropagation();help(title.trim(),content)};row.append(info)})}explanations(document.querySelector('.phone'));
@@ -16,7 +58,7 @@ const functionContent=document.querySelector('.private-function-content');functi
 window.__privateDesignAudit={beforeMoved:moved.size,after:[...cs.querySelectorAll('.set-row,.gs-row,input,button,select,textarea')].map(e=>e.id).filter(Boolean)};
 })();
 
-(function ready(){if(!window.__privateDesignAudit)return setTimeout(ready,100);const home=document.getElementById('page-phone');const quote=home.querySelector('.mini-card');document.getElementById('deco-widget').append(quote);home.querySelector('.mini-row').hidden=true;document.getElementById('love-days').hidden=true;document.getElementById('love-date').hidden=true;home.querySelector('.deco-love').hidden=true;const grid=home.querySelector('.app-grid');const widget=document.getElementById('music-widget');grid.before(widget);const hide=grid.querySelector('[data-app="my-arc"]');hide.classList.add('preview-home-hidden');const all=document.getElementById('private-all-functions');const entry=document.createElement('button');entry.className='app confirm-all';entry.type='button';entry.innerHTML='<div class="app-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><div class="app-name">所有功能</div>';entry.style.order='7';entry.onclick=()=>{all.click();document.querySelectorAll('.private-function-item').forEach(b=>{if(b.textContent==='所有功能')b.remove()});};grid.append(entry);all.classList.add('confirm-old-all');document.querySelectorAll('.tabbar .private-tab-label').forEach(e=>e.hidden=true);window.__privateDesignReady=true;})();
+(function ready(){if(!window.__privateDesignAudit)return setTimeout(ready,100);window.__privatePrepareHome();window.__privateDesignReady=true;})();
 
 (function ready(){if(!window.__privateDesignReady)return setTimeout(ready,100);const page=document.getElementById('page-chat'),body=document.getElementById('chat-body'),input=page.querySelector('.chat-input-row');const arrow=document.createElement('button');arrow.id='preview-chat-latest';arrow.type='button';arrow.ariaLabel='回到最新聊天';arrow.title='回到最新聊天';arrow.hidden=true;arrow.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M5 13l7 7 7-7"/></svg>';page.append(arrow);let frame=0;function sync(){frame=0;arrow.hidden=page.hidden||!(window.privateChatIsEarlierWindow?.()||body.scrollHeight-body.clientHeight-body.scrollTop>90);arrow.style.bottom=((input?.getBoundingClientRect().height||54)+16)+'px'}function schedule(){if(!frame)frame=requestAnimationFrame(sync)}body.addEventListener('scroll',schedule,{passive:true});new MutationObserver(schedule).observe(body,{childList:true,subtree:true});new MutationObserver(schedule).observe(page,{attributes:true,attributeFilter:['hidden']});new ResizeObserver(schedule).observe(body);if(input)new ResizeObserver(schedule).observe(input);arrow.onclick=()=>{if(window.privateChatReturnLatest?.()){requestAnimationFrame(()=>{body.scrollTop=body.scrollHeight;sync()})}else window.toast?.('记录正在加载，请稍后再试')};const originalJump=window.privateChatJumpDate;window.privateChatJumpDate=function(...args){const result=originalJump.apply(this,args);schedule();return result};sync()})();
 

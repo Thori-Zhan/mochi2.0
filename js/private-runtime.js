@@ -130,7 +130,7 @@
   page.innerHTML='<header class="private-date-head"><button type="button" aria-label="返回首页">‹</button><strong>全部功能</strong><span></span></header><div class="private-function-content"></div>';
   phone.insertBefore(page,document.querySelector('.tabbar'));
   const entry=document.createElement('button');entry.id='private-all-functions';entry.className='private-all-functions';entry.type='button';entry.textContent='全部功能 ›';grid.after(entry);
-  const sections=[['陪伴与互动',['chat','home','mail','feed','divination','music','drift','market','giftbox']],['记录与档案',['interact','memo-arc','my-arc','note','calendar','memory','outfit','period']],['日常与回顾',['stats','checkin','eat','decision']]];
+  const sections=[['陪伴与互动',['chat','home','mail','feed','divination','music','drift','market','giftbox']],['记录与档案',['interact','memo-arc','my-arc','note','calendar','memory','outfit','period']],['日常与回顾',['stats','checkin','eat','decision','call-time']]];
   function render(){
     const content=page.querySelector('.private-function-content');content.replaceChildren();
     const apps=[...grid.querySelectorAll(':scope > .app')],used=new Set();
@@ -150,9 +150,10 @@
 
 // Versioned local release notes: dismissible, no network, no compulsory acknowledgement.
 (function () {
-  const VERSION='2026-10-20-quote-2';window.__privateRelease=VERSION;
+  const VERSION='2026-10-20-call-1';window.__privateRelease=VERSION;
   const releases=[
-    {id:VERSION,date:'2026年10月20日',items:[['首次情话存档','修复没有旧存档时，启动等待状态可能挡住第一次保存的问题。'],['历史保留','已验证跨午夜回看、隔天重开和数据库恢复；保留已有原文，不补造漏存日期。']]},
+    {id:VERSION,date:'2026年10月20日',items:[['通话时光','新增接通时长、本周/本月/累计统计和按月收纳的完整记录，支持备注、收藏与删除。旧记录不猜测时长。'],['两个入口','所有功能→日常与回顾、聊天更多功能→工具，均可查看通话时光。'],['界面细节','爱心对齐头像、统一返回箭头，移除字卡库和设置根目录标题，并调整字卡页顶部留白。'],['开屏布局','修复本地数据恢复期间首页结构短暂错位，保留已确认的比例和配色。']]},
+    {id:'2026-10-20-quote-2',date:'2026年10月20日',items:[['首次情话存档','修复没有旧存档时，启动等待状态可能挡住第一次保存的问题。'],['历史保留','保留已有原文，不补造漏存日期。']]},
     {id:'2026-10-18-quote-1',date:'2026年10月18日',items:[['情话存档修复','修复首页情话能显示、却未保存到日历的问题；保留已有历史，刷新不重复。'],['跨天与数据恢复','回到页面或首页时补存当天情话；历史读取完成后再追加，不拿空列表覆盖旧记录。'],['历史记录说明','本次不补造过去没有存下来的情话，也不修改现有聊天记录。']]},
     {id:'2026-10-15-ui-2',date:'2026年10月15日',items:[['首页布局','头像与居中情话合栏，取消相伴日期展示；八个常用入口包含所有功能。'],['首页播放器','封面、进度与上一首、播放、下一首、收藏、列表使用原音乐库。'],['外观','蓝色改为透白浅青，夜间采用黑灰柔光；杏桃与石榴红保留配色并增加柔光质感。'],['设置整理','字卡用途分区；聊天设置合并为四个折叠分组，一般说明可点 i 查看。'],['返回最新','翻看聊天历史时显示向下箭头，可回到最新聊天；日夜图标切换预设后保持可见。']]},
     {id:'2026-10-11-ui-1',date:'2026年10月11日',items:[['主题预设','新增三套日夜主题。'],['消息时间','新增按需、始终、简洁三种时间模式。'],['功能目录与公告','新增全部功能入口与更新公告合集。']]},

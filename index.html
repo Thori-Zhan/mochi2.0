@@ -11070,6 +11070,8 @@ html[data-private-preset][data-theme=dark] .app-ico svg{stroke:#b6d8e8!important
 #deco-widget{padding:14px!important;min-height:0!important;height:auto!important}
 
 .deco-love,#love-days{font-size:12px!important;line-height:1.6!important}
+/* Do not paint legacy home nodes with the new grid before its defer script. */
+html:not([data-private-home-ready]) body .phone #page-phone{visibility:hidden!important}
 .mini-row{min-height:0!important}
 .mini-card{min-height:0!important;height:auto!important}
 
@@ -11328,6 +11330,39 @@ html[data-private-preset="red"] body .phone .preview-chat-options .set-group{bac
 #preview-chat-latest svg{width:21px;height:21px}
 #preview-chat-latest:focus-visible{outline:2px solid var(--private-accent);outline-offset:3px}
 .preview-info{position:relative;z-index:12;pointer-events:auto}
+
+#page-call-statistics{overflow-y:auto!important;padding:0 16px 24px!important;color:var(--private-ink,var(--text));background:var(--private-bg,var(--bg-b))}#page-call-statistics[hidden]{display:none!important}.cs2-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:12px 0;background:var(--private-bg,var(--bg-b))}.cs2-head strong{flex:1;font-size:18px}.cs2-head button{min-width:40px;min-height:40px;border:0;border-radius:50%;background:var(--private-panel);color:var(--private-ink)}.cs2-box{padding:18px;margin:12px 0 16px;border:1px solid var(--private-line);border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--private-accent) 5%,var(--private-panel)),var(--private-panel) 70%)}.cs2-muted{font-size:12px;color:var(--private-muted);line-height:1.7}.cs2-total{font-size:30px;font-weight:500;margin:9px 0;font-variant-numeric:tabular-nums}.cs2-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid var(--private-line);padding-top:15px;margin-top:17px}.cs2-metrics b{display:block;font-size:13px;margin-top:6px;font-weight:500}.cs2-metrics span{font-size:11px;color:var(--private-muted)}.cs2-flex{display:flex;justify-content:space-between;align-items:center;gap:10px}.cs2-action{border:0;border-radius:12px;padding:11px 14px;background:var(--private-soft);color:var(--private-ink);font:inherit;cursor:pointer;min-height:42px}.cs2-primary{background:var(--private-accent);color:var(--private-panel)}.cs2-full{width:100%;margin-top:14px}.cs2-tabs{display:flex;gap:4px;padding:4px;background:var(--private-soft);border-radius:13px;margin:12px 0}.cs2-tabs button{flex:1;background:transparent;color:var(--private-muted);border:0;border-radius:10px;padding:10px 2px;min-width:0;font:inherit;font-size:13px}.cs2-tabs button[aria-pressed=true]{background:var(--private-panel);color:var(--private-ink)}.cs2-list{padding:0 13px;border:1px solid var(--private-line);border-radius:20px;background:var(--private-panel);margin:12px 0}.cs2-record{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--private-line);padding:15px 0;color:var(--private-ink);font:inherit}.cs2-record:last-child{border-bottom:0}.cs2-symbol{width:34px;height:34px;flex-shrink:0;border-radius:12px;display:grid;place-items:center;background:var(--private-soft);color:var(--private-accent)}.cs2-copy{flex:1;min-width:0;font-size:13px}.cs2-copy small{display:block;font-size:11px;color:var(--private-muted);margin-top:4px}.cs2-duration{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}.cs2-entry{width:100%;margin-bottom:14px}#page-call-statistics h2{font-size:15px;font-weight:500;margin:0}#page-call-statistics details{border-top:1px solid var(--private-line);padding:12px 0}#page-call-statistics summary{font-size:14px;padding:8px 0;cursor:pointer}#page-call-statistics summary small{font-size:11px;color:var(--private-muted);margin-left:8px}.cs2-bars{height:130px;display:flex;align-items:end;gap:9px;margin:16px 0}.cs2-col{flex:1;height:100%;display:flex;align-items:center;justify-content:end;flex-direction:column;gap:7px;font-size:11px;color:var(--private-muted)}.cs2-bar{max-width:28px;width:100%;border:0;min-height:3px;border-radius:5px;background:var(--private-soft);cursor:pointer}.cs2-bar[aria-pressed=true]{background:var(--private-accent)}.cs2-line{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--private-line);font-size:13px}.cs2-line span:first-child{color:var(--private-muted)}#page-call-statistics textarea{width:100%;min-height:100px;margin:10px 0;padding:12px;border:1px solid var(--private-line);border-radius:12px;font:inherit;font-size:16px;background:var(--private-panel);color:var(--private-ink)}.cs2-empty{text-align:center;padding:25px 12px;color:var(--private-muted);font-size:13px}.cs2-danger{color:var(--danger,#b85965)}.cs2-sheet{position:fixed;inset:0;z-index:30000;background:#0007;display:flex;align-items:center;justify-content:center;padding:20px}.cs2-sheet>section{max-width:430px;width:100%;padding:23px;border-radius:24px;background:var(--private-panel);color:var(--private-ink)}.cs2-sheet p{font-size:13px;line-height:1.8;margin:15px 0}.cs2-preview-tag{font-size:11px;color:var(--private-muted);line-height:1.7;margin:4px 0 12px}.cs2-empty button{margin-top:14px}.cs2-settings-line{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--private-line);font-size:13px}.cs2-status{font-size:12px;color:var(--private-muted);margin:10px 0;min-height:18px}#callstats-preview-entry{position:fixed;right:8px;top:calc(env(safe-area-inset-top,0px) + 5px);z-index:15000;font-size:11px;padding:5px 8px;border-radius:9px;border:1px solid var(--private-line);color:var(--private-ink);background:var(--private-panel);opacity:.88}@media(max-width:350px){#page-call-statistics{padding-right:12px!important;padding-left:12px!important}.cs2-box{padding:14px}.cs2-total{font-size:25px}}
+
+/* Preview-only corrections. Preserve the approved home grid and palette. */
+html body .phone #page-phone .deco-avatars #deco-heart {
+  align-self:flex-start!important;
+  height:min(13.3vw,7.05vh)!important;
+  margin-top:0!important;
+  transform:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body .phone #page-chatcard > .chat-title,
+html body .phone #page-setting:has(> .private-settings-menu:not([hidden])) > .set-title,
+html body .phone #page-setting > .private-settings-back {
+  display:none!important;
+}
+html body .phone .preview-back-icon {
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+  flex:0 0 40px!important;padding:0!important;line-height:1!important;
+}
+html body .phone .preview-back-icon svg {
+  display:block!important;width:20px!important;height:20px!important;
+  min-width:20px!important;flex:none!important;transform:none!important;
+  stroke:currentColor!important;fill:none!important;
+}
+html body .phone .preview-back-labeled{width:auto!important;flex-basis:auto!important;gap:6px;padding:0 10px!important}
+/* Never let icon display rules expose controls the original page has hidden. */
+html body .phone .preview-back-icon[hidden]{display:none!important}
+/* Match the settings directory's first-card top inset. */
+html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 
 </style>
 </head>
@@ -12469,7 +12504,7 @@ html[data-private-preset="red"] body .phone .preview-chat-options .set-group{bac
       
       
       
-      <div class="ver">Mochi 字卡传讯 2026-10-20-quote-2</div>
+      <div class="ver">Mochi 字卡传讯 2026-10-20-call-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       
@@ -15742,7 +15777,7 @@ html[data-private-preset="red"] body .phone .preview-chat-options .set-group{bac
   // v3.5.123：readonly 起手（防 Chrome 密码弹条破坏表单签名）——这里立即解除，
   // 早于所有功能模块，任何设备都不会出现输入框不可用的情况
   (function () { var _ci = document.getElementById('chat-input'); if (_ci) _ci.readOnly = false; })();
-window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window.__mochiJsFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js"];window.__mochiExtFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js"];window.__mochiBootAt=Date.now();</script>
+window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window.__mochiJsFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call-statistics.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js","ui-alignment.js"];window.__mochiExtFiles=["device.js","idb.js","contacts.js","applock.js","card-lock.js","dcp-master.js","media-pool.js","storage-slim.js","img-compress.js","img-ingest.js","tabs.js","quote-cards.js","personalize.js","chat.js","chatcard.js","chat-settings.js","reply-settings.js","fav-settings.js","default-cards-data.js","dict-ext-data.js","default-cards.js","quote-spell.js","dream-free.js","mood-followup-data.js","mood-reply-cards.js","ta-mood-data.js","ta-mood.js","music-player.js","calendar.js","divination.js","avatar-lib.js","ta-ask.js","ck-question.js","ta-invite.js","bg-keep.js","records.js","call-statistics.js","call.js","mail.js","feed.js","loc-lib.js","p2-features.js","gift-shop.js","memo-arc.js","my-arc.js","period.js","drift-bottle.js","decision.js","group-decision.js","mood-diary.js","sfx.js","data-backup.js","feature-data.js","pwa.js","settings-help.js","mobile-adapt.js","outfit-journal.js","ui-alignment.js"];window.__mochiBootAt=Date.now();</script>
 
 
 
@@ -15797,6 +15832,7 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 <script defer src="js/ta-invite.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ta-invite.js')"></script>
 <script defer src="js/bg-keep.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('bg-keep.js')"></script>
 <script defer src="js/records.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('records.js')"></script>
+<script defer src="js/call-statistics.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('call-statistics.js')"></script>
 <script defer src="js/call.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('call.js')"></script>
 <script defer src="js/mail.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mail.js')"></script>
 <script defer src="js/feed.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('feed.js')"></script>
@@ -15817,6 +15853,7 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 <script defer src="js/settings-help.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('settings-help.js')"></script>
 <script defer src="js/mobile-adapt.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mobile-adapt.js')"></script>
 <script defer src="js/outfit-journal.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('outfit-journal.js')"></script>
+<script defer src="js/ui-alignment.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ui-alignment.js')"></script>
 <script defer src="js/private-runtime.js"></script>
 <script defer src="js/private-design.js"></script>
 </body></html>

@@ -1,0 +1,21 @@
+(function(){try{
+(() => {
+  'use strict';
+  const arrow='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"></path></svg>';
+  const selector='.ch-back,button,[role="button"]';
+  function normalize(el){
+    if(el.dataset?.previewBack==='true'||!el.closest('.phone'))return;
+    const text=el.textContent.trim();
+    if(!el.matches('.ch-back')&&!/^[‹〈❮←＜<]/.test(text))return;
+    if(!el.matches('.ch-back')&&!/back|返回/i.test([el.id,el.className,el.getAttribute('aria-label'),el.dataset.cs].join(' ')))return;
+    el.dataset.previewBack='true';el.classList.add('preview-back-icon');
+    if(!el.getAttribute('aria-label'))el.setAttribute('aria-label','返回');
+    const label=text.replace(/^[‹〈❮←＜<]\s*/, '');
+    el.innerHTML=arrow;
+    if(!el.matches('.ch-back')&&label){const span=document.createElement('span');span.textContent=label;el.append(span);el.classList.add('preview-back-labeled');}
+  }
+  document.querySelectorAll(selector).forEach(normalize);
+  new MutationObserver(records=>{for(const record of records)for(const node of record.addedNodes){if(node.nodeType!==1)continue;if(node.matches(selector))normalize(node);node.querySelectorAll(selector).forEach(normalize);}}).observe(document.querySelector('.phone'),{childList:true,subtree:true});
+})();
+window.__mochiLoaded.push("ui-alignment.js");
+}catch(e){console.error("ui-alignment.js",e);window.__jsErrors.push("ui-alignment.js: "+String(e));window.__mochiErrLoaded.push("ui-alignment.js");}})();

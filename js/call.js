@@ -344,6 +344,7 @@
   function saveCallActive() {
     if (!currentCall) return;
     const payload = callActivePayload();
+    window.callStatsV1?.snapshot(currentCall);
     try { sessionStorage.setItem(CALL_ACTIVE_KEY, payload); } catch (e) {}
     try { localStorage.setItem(CALL_ACTIVE_KEY, payload); } catch (e) {}
     try { if (window.idbSet) window.idbSet(CALL_ACTIVE_KEY, JSON.parse(payload)); } catch (e) {}
@@ -438,6 +439,7 @@
   function startCallDuration() {
     stopTimers();
     if (!currentCall.connectedTime) currentCall.connectedTime = Date.now(); // v3.26.x：恢复通话时已有 connectedTime 不覆盖，计时从接通时刻继续
+    window.callStatsV1?.snapshot(currentCall);
     updateDur(); // v3.13.x：接通立即刷新显示，避免接通瞬间仍停留「00:00」卡一下
     if (!currentCall.hangupAt) currentCall.hangupAt = Math.max(currentCall.connectedTime + 180000, Date.now());
     let hbCount = 0;
@@ -473,6 +475,7 @@
     } catch (e) {}
   }
   function endCall(text, holdSilent) {
+    if(currentCall&&!holdSilent)window.callStatsV1?.end(currentCall,text);
     clearCallActive(); // v3.26.x：正常结束清除进行中标记（中断恢复靠残留检测）
     try { store.set('records-call-last', String(Date.now())); } catch (e) {}
     if (window.stopSfx) window.stopSfx('ring');
@@ -887,6 +890,7 @@
     }
   }
   function recoverProcess(info, src) {
+    window.callStatsV1?.resume(info);
     if (!info.connectedTime) { clearCallActive(); return; } // 未接通就中断（响铃/呼叫中刷新），不恢复不记
     const age = Date.now() - (info.ts || 0);
     const windowMs = src === 'idb' ? CALL_IDB_WINDOW : CALL_RESUME_WINDOW;
@@ -930,6 +934,7 @@
     writeInterruptRecord(info);
   }
   function writeInterruptRecord(info) {
+    window.callStatsV1?.interrupt(info);
     const cid = info.cid || 'default';
     const dir = info.direction || 'out';
     const name = info.name || 'TA';
