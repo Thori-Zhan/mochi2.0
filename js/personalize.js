@@ -7322,9 +7322,9 @@ bindAdjDrag(headTop, false); // #1534：拖标题行移动面板（与桌面美�
       }
     });
     try {
+      if (!window.__mochiDataReady) return;
       if (!window.xyBigWriteHold || !window.xyBigWriteHold(store, 'quote-history')) {
         const today = fishToday();
-        if (!window.__mochiDataReady) return;
         const raw = store.get('quote-history');
         const owner = window.activePrefix();
         if (raw === null && window.idbHydrateKey && !quoteHistoryConfirmed.has(owner)) {
