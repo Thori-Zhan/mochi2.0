@@ -11364,8 +11364,77 @@ html body .phone .preview-back-icon[hidden]{display:none!important}
 /* Match the settings directory's first-card top inset. */
 html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 
+.opening-pending .phone{visibility:hidden}
+#auto-theme-page[hidden],#opening-screen[hidden],#preview-tools[hidden]{display:none!important}
+#auto-theme-page{position:absolute;inset:0;z-index:9000;background:var(--private-bg,#f6fafb);color:var(--private-ink,#36505d);overflow:auto;padding:0 18px 32px;font-family:inherit}
+.at-header{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;padding:18px 0 22px;position:sticky;top:0;background:var(--private-bg,#f6fafb);z-index:3}
+.at-header h2{font-size:20px;text-align:center;margin:0;font-weight:600}
+.at-back{width:40px;height:40px;border:0;border-radius:50%;background:var(--private-soft);color:inherit;display:grid;place-items:center}
+.at-back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8}
+.at-card{margin-bottom:16px;padding:18px;border:1px solid var(--private-line);border-radius:22px;background:var(--private-panel);box-shadow:0 8px 24px #0b233504}
+.at-card h3{margin:0 0 14px;font-size:16px;font-weight:600}
+.at-choices{display:grid;gap:8px}
+.at-choice{display:flex;gap:12px;align-items:center;padding:13px;border:1px solid var(--private-line);border-radius:14px;cursor:pointer}
+.at-choice:has(input:checked){background:var(--private-soft);border-color:var(--private-accent)}
+.at-choice input{accent-color:var(--private-accent);width:17px;height:17px;margin:0}
+.at-choice span{font-size:15px}
+.at-sub{margin-top:16px;display:grid;gap:12px}
+.at-sub[hidden]{display:none}
+.at-time{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14px}
+.at-time input,.at-sub select{font:inherit;color:inherit;border:1px solid var(--private-line);background:var(--private-bg);padding:9px;border-radius:9px;color-scheme:light}
+[data-theme=dark] .at-time input{color-scheme:dark}
+.at-row{display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:15px}
+.at-switch{appearance:none;position:relative;width:42px;height:26px;margin:0;flex:none;background:var(--private-line);border:0;border-radius:20px;cursor:pointer}
+.at-switch:checked{background:var(--private-accent)}
+.at-switch::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:100%;background:#fff;transition:transform .2s}
+.at-switch:checked::after{transform:translateX(16px)}
+.at-divider{height:1px;background:var(--private-line);margin:16px 0}
+.at-caption{font-size:13px;color:var(--private-muted);line-height:1.6;margin:12px 0 0}
+.at-status{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px}
+.at-status strong{font-weight:500;background:var(--private-soft);padding:5px 10px;border-radius:9px}
+.at-help{font-size:13px;color:var(--private-muted);margin-top:12px;line-height:1.7}
+.at-help summary{cursor:pointer}
+.at-help p{margin:8px 0 0}
+.at-error{font-size:13px;color:#bd5d50;margin:0}
+.at-preview-btn{width:100%;margin-top:16px;border:0;border-radius:14px;padding:13px;background:var(--private-accent);color:var(--private-bg);font:inherit;cursor:pointer}
+.at-manual{display:flex;gap:10px}
+.at-manual label{flex:1}
+.at-entry{cursor:pointer}
+.at-entry .val{max-width:55%;font-size:13px}
+.at-category-header{display:none}
+#page-setting:has(.private-settings-menu[hidden]):has(.them-sec[data-sec="basic"]:not([hidden]))>.at-category-header{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;margin:8px 12px 4px;min-height:48px}
+#page-setting:has(.private-settings-menu[hidden]):has(.them-sec[data-sec="basic"]:not([hidden]))>:is(.set-title,.private-settings-back){display:none!important}
+.at-category-header h2{margin:0;color:var(--private-ink);font-size:20px;line-height:1.35;text-align:center;font-weight:600}
+.at-category-header .at-back{width:44px;height:44px;background:transparent}
+#row-theme-mode.at-entry::after{content:'';width:7px;height:7px;margin:0 4px 0 2px;border:solid var(--private-muted);border-width:1.5px 1.5px 0 0;transform:rotate(45deg)}
+#opening-screen{position:fixed;inset:0;z-index:11000;display:grid;place-items:center;background:#e2ecf1;opacity:1;transition:opacity .6s;isolation:isolate;overflow:hidden}
+#opening-screen.leaving{opacity:0;pointer-events:none}
+#opening-screen .opening-canvas{width:100%;height:100%;position:absolute;overflow:hidden;background:#e2ecf1;display:grid;place-items:center;isolation:isolate}
+#opening-screen.night,#opening-screen.night .opening-canvas{background:var(--private-bg,#101010)}
+#opening-screen .opening-canvas::after{content:'';position:absolute;left:50%;top:50%;width:126%;height:52%;z-index:0;pointer-events:none;filter:blur(3px);background:radial-gradient(ellipse closest-side,#f7fcff 0%,#f7fcffe8 20%,#f7fcffa6 42%,#f7fcff45 65%,#f7fcff10 83%,#f7fcff00);animation:opening-glow 4.8s ease-in-out -1s infinite}
+#opening-screen:not(.night) .opening-canvas{animation:opening-day 4.8s ease-in-out -1s infinite}
+#opening-screen.night .opening-canvas::after{background:radial-gradient(ellipse closest-side,var(--private-soft,#343434) 0%,color-mix(in srgb,var(--private-soft,#343434) 65%,transparent) 25%,color-mix(in srgb,var(--private-soft,#343434) 30%,transparent) 50%,color-mix(in srgb,var(--private-soft,#343434) 8%,transparent) 75%,transparent 100%);animation:opening-night-glow 5.6s ease-in-out -1.35s infinite}
+@keyframes opening-day{0%,100%{background-color:#e2ecf1}50%{background-color:#b9ceda}}
+@keyframes opening-glow{0%,100%{opacity:.12;transform:translate(-50%,-50%) scale(.72)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}}
+@keyframes opening-night-glow{0%,100%{opacity:.24;transform:translate(-50%,-50%) scale(.78)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+#opening-screen .word,#opening-screen .opening-canvas>img:not(.flake){position:relative;width:min(35%,182px);height:auto;z-index:2}
+#opening-screen.night .opening-canvas>img:not(.flake){filter:grayscale(1)}
+#opening-screen .flake,#opening-screen svg{position:absolute;pointer-events:none;z-index:1}
+#opening-screen .flake{animation:opening-snow-day linear infinite;max-width:32px}
+#opening-screen svg{color:var(--private-muted,#a4a4a0);animation:opening-snow-night linear infinite;max-width:34px}
+#opening-screen svg:nth-of-type(n+11){display:none}
+@keyframes opening-snow-day{from{top:-7%;transform:translateX(-5px) rotate(-14deg)}to{top:107%;transform:translateX(7px) rotate(21deg)}}
+@keyframes opening-snow-night{from{top:-4%;transform:translateX(-3px)}to{top:104%;transform:translateX(3px)}}
+#opening-screen.no-glow .opening-canvas,#opening-screen.no-glow .opening-canvas::after{animation:none}
+#opening-screen.no-glow .opening-canvas::after{display:none}
+.opening-footer{position:absolute;bottom:max(30px,env(safe-area-inset-bottom));left:20px;right:20px;text-align:center;z-index:4;font:13px system-ui;color:#5a737f}
+.night .opening-footer{color:var(--private-muted,#a4a4a0)}.opening-footer button{border:1px solid currentColor;border-radius:20px;padding:8px 20px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.opening-footer button:disabled{opacity:.5;cursor:wait}
+@media(prefers-reduced-motion:reduce){#opening-screen *,#opening-screen ::after{animation:none!important}#opening-screen{transition:none}}
+
+
 </style>
-</head>
+<script src="js/appearance-boot.js"></script></head>
 <body>
   
   
@@ -12504,7 +12573,7 @@ html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
       
       
       
-      <div class="ver">Mochi 字卡传讯 2026-10-20-call-1</div>
+      <div class="ver">Mochi 字卡传讯 2026-11-15-opening-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       
@@ -15856,4 +15925,4 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 <script defer src="js/ui-alignment.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ui-alignment.js')"></script>
 <script defer src="js/private-runtime.js"></script>
 <script defer src="js/private-design.js"></script>
-</body></html>
+<script defer src="js/opening-assets.js"></script><script defer src="js/appearance.js"></script></body></html>

@@ -1,0 +1,210 @@
+(() => {
+  const { config, clock, media, resolve } = window.appearancePreview;
+  const root = document.documentElement;
+  const preferences = window.xyStore?.('xy-home-v2');
+  const phone = document.querySelector('.phone');
+  const panel = document.createElement('section');
+  panel.id = 'auto-theme-page';
+  panel.hidden = true;
+  panel.setAttribute('aria-label', '日夜与开屏');
+  panel.innerHTML = `
+    <header class="at-header"><button class="at-back" aria-label="返回外观设置"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button><h2>日夜与开屏</h2><span></span></header>
+    <div class="at-card"><h3>日夜模式</h3><div class="at-choices">
+      <label class="at-choice"><input type="radio" name="at-mode" value="system"><span>跟随系统</span></label>
+      <label class="at-choice"><input type="radio" name="at-mode" value="schedule"><span>定时切换</span></label>
+      <label class="at-choice"><input type="radio" name="at-mode" value="manual"><span>手动选择</span></label></div>
+      <div class="at-sub" id="at-schedule" hidden>
+        <label class="at-time">日间开始<input type="time" id="at-day" required aria-label="日间开始"></label>
+        <label class="at-time">夜间开始<input type="time" id="at-night" required aria-label="夜间开始"></label>
+        <p class="at-error" id="at-error" role="status"></p>
+        <p class="at-caption">按设备本地时间切换，回到页面时也会重新确认。</p>
+      </div>
+      <div class="at-sub at-manual" id="at-manual" hidden>
+        <label class="at-choice"><input type="radio" name="at-manual" value="light"><span>日间</span></label>
+        <label class="at-choice"><input type="radio" name="at-manual" value="dark"><span>夜间</span></label>
+      </div>
+      <details class="at-help"><summary>说明</summary><p>这项设置同时控制开屏和整个网站。跟随系统读取设备外观；定时切换使用你选的两个时间。聊天右上角的日夜按钮会切到手动模式。</p></details>
+    </div>
+    <div class="at-card"><div class="at-status"><span>当前外观</span><strong id="at-effective"></strong></div><p class="at-caption" id="at-source"></p></div>
+    <div class="at-card"><h3>开屏</h3>
+      <label class="at-row">回家开屏<input class="at-switch" type="checkbox" id="at-opening" role="switch"></label>
+      <div class="at-divider"></div>
+      <label class="at-row">中央柔光<input class="at-switch" type="checkbox" id="at-glow" role="switch"></label>
+      <p class="at-caption">日间雾蓝、夜间雪夜，文字居中，雪花缓慢飘落。</p>
+      <button class="at-preview-btn" id="at-replay">预览开屏</button>
+    </div>`;
+  phone.append(panel);
+  let returnFocus;
+  function openSettings() {
+    returnFocus = document.activeElement;
+    panel.hidden = false;
+    phone.querySelectorAll(':scope > .page,:scope > .tabbar').forEach(e => e.inert = true);
+    panel.querySelector('.at-back').focus();
+    render();
+  }
+  function closeSettings() {
+    panel.hidden = true;
+    phone.querySelectorAll(':scope > .page,:scope > .tabbar').forEach(e => e.inert = false);
+    returnFocus?.focus();
+  }
+  panel.querySelector('.at-back').onclick = closeSettings;
+  panel.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
+  function save() {
+    try { preferences?.set('appearance-v1', config); localStorage.setItem('xy-home-v2:appearance-v1', JSON.stringify(config)); }
+    catch { window.toast?.('设置暂未保存，请检查本机存储'); }
+  }
+  function effective() {
+    return resolve();
+  }
+  function apply() {
+    const theme = effective();
+    if (theme === 'dark' && root.dataset.theme !== 'dark') root.dataset.theme = 'dark';
+    if (theme === 'light' && root.hasAttribute('data-theme')) root.removeAttribute('data-theme');
+    // Legacy handlers read this effective value. The new choice remains in its own key.
+    try {
+      if (window.__mochiDataReady && localStorage.getItem('xy-home-v2:theme-mode') !== theme) localStorage.setItem('xy-home-v2:theme-mode', theme);
+    } catch {}
+    const oldValue = document.getElementById('theme-mode-val');
+    if (oldValue) oldValue.textContent = config.mode === 'system' ? '跟随系统' : config.mode === 'schedule' ? '定时切换' : theme === 'dark' ? '夜间' : '日间';
+    document.querySelectorAll('[data-auto-theme-summary]').forEach(e => e.textContent = oldValue?.textContent || '跟随系统');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#101010' : '#f6fafb');
+    render();
+    if (!splash.hidden) paintOpening();
+  }
+  function render() {
+    panel.querySelectorAll('[name="at-mode"]').forEach(e => e.checked = e.value === config.mode);
+    panel.querySelectorAll('[name="at-manual"]').forEach(e => e.checked = e.value === config.manual);
+    panel.querySelector('#at-schedule').hidden = config.mode !== 'schedule';
+    panel.querySelector('#at-manual').hidden = config.mode !== 'manual';
+    for (const [id, key] of [['at-day', 'day'], ['at-night', 'night']]) {
+      const input = panel.querySelector('#' + id);
+      if (document.activeElement !== input) input.value = config[key];
+    }
+    panel.querySelector('#at-opening').checked = config.opening;
+    panel.querySelector('#at-glow').checked = config.glow;
+    const theme = effective();
+    panel.querySelector('#at-effective').textContent = theme === 'dark' ? '夜间 · 雪夜' : '日间 · 雾蓝';
+    const source = config.mode === 'system' ? '跟随系统外观' : config.mode === 'manual' ? '手动选择' : config.day + ' 日间 / ' + config.night + ' 夜间';
+    panel.querySelector('#at-source').textContent = source + ' · ' + clock();
+  }
+  panel.addEventListener('change', e => {
+    const input = e.target;
+    if (input.name === 'at-mode') config.mode = input.value;
+    if (input.name === 'at-manual') config.manual = input.value;
+    if (input.id === 'at-opening') config.opening = input.checked;
+    if (input.id === 'at-glow') config.glow = input.checked;
+    if (input.id === 'at-day' || input.id === 'at-night') {
+      const day = panel.querySelector('#at-day').value;
+      const night = panel.querySelector('#at-night').value;
+      if (!day || !night || day === night) {
+        panel.querySelector('#at-error').textContent = '请选择两个不同的有效时间。';
+        return;
+      }
+      panel.querySelector('#at-error').textContent = '';
+      config.day = day;
+      config.night = night;
+    }
+    save(); apply();
+  });
+  // Capture existing entry points so all theme changes share this choice.
+  document.addEventListener('click', e => {
+    if (e.target.closest('#row-theme-mode')) { e.preventDefault(); e.stopImmediatePropagation(); openSettings(); }
+    if (e.target.closest('#private-theme-toggle')) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      const next = effective() === 'dark' ? 'light' : 'dark';
+      config.mode = 'manual'; config.manual = next;
+      save(); apply();
+    }
+  }, true);
+  const entry = document.getElementById('row-theme-mode');
+  entry.classList.add('at-entry');
+  entry.querySelector('.txt').textContent = '日夜与开屏';
+  entry.setAttribute('role', 'button');
+  entry.tabIndex = 0;
+  entry.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); entry.click(); }
+  });
+  const categoryTitle = document.querySelector('#page-setting .set-title');
+  const header = document.createElement('header');
+  header.className = 'at-category-header';
+  header.innerHTML = '<button type="button" class="at-back" aria-label="返回设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></button><h2>外观</h2>';
+  categoryTitle.before(header);
+  header.querySelector('button').onclick = () => document.querySelector('#page-setting .private-settings-back').click();
+  const splash = document.createElement('section');
+  splash.id = 'opening-screen'; splash.hidden = true;
+  splash.setAttribute('role', 'dialog'); splash.setAttribute('aria-label', '回家开屏');
+  splash.innerHTML = '<div class="opening-canvas"></div><div class="opening-footer"><button type="button">进入首页</button></div>';
+  document.body.append(splash);
+  let openingTheme = null, closeTimer, readinessTimer, previousFocus;
+  const enter = splash.querySelector('button');
+  function paintOpening() {
+    const theme = effective();
+    splash.classList.toggle('night', theme === 'dark');
+    splash.classList.toggle('no-glow', !config.glow);
+    if (theme !== openingTheme) {
+      splash.querySelector('.opening-canvas').innerHTML = window.openingArtwork[theme === 'dark' ? 'night' : 'day'];
+      openingTheme = theme;
+    }
+  }
+  function dismissOpening() {
+    if (!window.__mochiDataReady) return;
+    clearTimeout(closeTimer); clearTimeout(readinessTimer);
+    splash.classList.add('leaving');
+    setTimeout(() => { splash.hidden = true; phone.inert = false; previousFocus?.focus(); document.dispatchEvent(new Event('mochi-opening-done')); }, 610);
+  }
+  function startOpening(initial = false) {
+    clearTimeout(closeTimer); clearTimeout(readinessTimer);
+    previousFocus = document.activeElement;
+    phone.inert = true;
+    splash.classList.remove('leaving');
+    splash.hidden = false;
+    paintOpening();
+    root.classList.remove('opening-pending');
+    const started = performance.now();
+    function ready() {
+      enter.disabled = !window.__mochiDataReady;
+      enter.textContent = window.__mochiDataReady ? '进入首页' : '正在准备…';
+      if (!window.__mochiDataReady) { readinessTimer = setTimeout(ready, 120); return; }
+      if (initial) closeTimer = setTimeout(dismissOpening, Math.max(0, 4200 - (performance.now() - started)));
+      enter.focus();
+    }
+    ready();
+  }
+  enter.onclick = () => {
+    if (!window.__mochiDataReady) return;
+    closeSettings();
+    document.querySelector('.tabbar [data-page="page-phone"]')?.click();
+    dismissOpening();
+  };
+  panel.querySelector('#at-replay').onclick = () => startOpening();
+  media.addEventListener('change', apply);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) apply(); });
+  window.addEventListener('pageshow', apply);
+  function restoreAppearance() {
+    const stored = preferences?.get('appearance-v1');
+    if (stored && typeof stored === 'object') {
+      if (['system','schedule','manual'].includes(stored.mode)) config.mode = stored.mode;
+      if (['light','dark'].includes(stored.manual)) config.manual = stored.manual;
+      if (/^([01]\d|2[0-3]):[0-5]\d$/.test(stored.day) && /^([01]\d|2[0-3]):[0-5]\d$/.test(stored.night) && stored.day !== stored.night) {
+        config.day = stored.day; config.night = stored.night;
+      }
+      config.opening = stored.opening !== false; config.glow = stored.glow !== false;
+      localStorage.setItem('xy-home-v2:appearance-v1', JSON.stringify(config));
+    }
+    apply();
+  }
+  document.addEventListener('mochi-restore-done', restoreAppearance);
+  function checkMinute() {
+    apply();
+    setTimeout(checkMinute, 60000 - Date.now() % 60000 + 30);
+  }
+  setTimeout(checkMinute, 60000 - Date.now() % 60000 + 30);
+  new MutationObserver(() => {
+    const desired = effective();
+    if ((root.dataset.theme === 'dark' ? 'dark' : 'light') !== desired) apply();
+  }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  if (window.__mochiDataReady) restoreAppearance(); else apply();
+  if (config.opening) startOpening(true);
+  else root.classList.remove('opening-pending');
+  window.__appearancePreviewReady = true;
+})();
