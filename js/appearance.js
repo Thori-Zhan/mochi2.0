@@ -133,6 +133,7 @@
   const splash = document.createElement('section');
   splash.id = 'opening-screen'; splash.hidden = true;
   splash.setAttribute('role', 'dialog'); splash.setAttribute('aria-label', '回家开屏');
+  splash.tabIndex = -1;
   splash.innerHTML = '<div class="opening-canvas"></div><div class="opening-footer"><button type="button">进入首页</button></div>';
   document.body.append(splash);
   let openingTheme = null, closeTimer, readinessTimer, previousFocus;
@@ -166,7 +167,7 @@
       enter.textContent = window.__mochiDataReady ? '进入首页' : '正在准备…';
       if (!window.__mochiDataReady) { readinessTimer = setTimeout(ready, 120); return; }
       if (initial) closeTimer = setTimeout(dismissOpening, Math.max(0, 4200 - (performance.now() - started)));
-      enter.focus();
+      splash.focus({ preventScroll: true });
     }
     ready();
   }
