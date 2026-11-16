@@ -11453,9 +11453,9 @@ html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 [data-theme=dark] #page-snowfall{color:#b6c1c3;opacity:.5}
 #page-snowfall[hidden]{display:none!important}
 #page-snowfall.quiet{opacity:.08}
-#page-snowfall .card-flake{position:absolute;top:-5%;animation:card-flake-fall linear infinite;pointer-events:none}
+#page-snowfall .card-flake{position:absolute;top:0;will-change:transform;animation:card-flake-fall linear infinite;pointer-events:none}
 #page-snowfall .card-flake svg{display:block;width:100%;height:auto}
-@keyframes card-flake-fall{0%{top:-5%;transform:translateX(-2px) rotate(-12deg)}100%{top:105%;transform:translateX(3px) rotate(22deg)}}
+@keyframes card-flake-fall{0%{transform:translate3d(-2px,-20px,0) rotate(-12deg)}100%{transform:translate3d(3px,var(--snow-distance,880px),0) rotate(22deg)}}
 #page-snowfall[hidden] .card-flake{animation-play-state:paused}
 .phone .tabbar{position:relative}
 .phone .tabbar .snow-cap{position:absolute;left:5%;top:-7px;width:90%;height:15px;pointer-events:none;color:#fbfdff;filter:drop-shadow(0 1px 1px #a0b9c254);z-index:4;overflow:visible}
@@ -11476,7 +11476,29 @@ html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 html[data-idle-snow] .phone .snow-cap,html[data-idle-snow] .phone .input-snow-cap{visibility:hidden}
 
 </style>
-<script src="js/appearance-boot.js"></script></head>
+<script src="js/appearance-boot.js"></script><style id="site-performance">#snow-clear-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:82}
+#snow-clear-layer[hidden]{display:none!important}
+html:root[data-private-preset] body .phone #page-phone #deco-widget,
+html:root[data-private-preset] body .phone .confirm-player,
+html:root[data-private-preset] body .phone .tabbar,
+html:root[data-private-preset] body .phone .deco-avatar .ring,
+html:root[data-private-preset] body .phone .app-ico{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
+/* Snow belongs to page content, below the native modal layers (90 and above). */
+#page-snowfall{z-index:80}
+#idle-snow{z-index:81}
+#snow-clear-layer{z-index:82}
+body:has(.call-mask:not([hidden]),.modal-mask:not([hidden]),.tc-mask:not([hidden])) :is(#page-snowfall,#idle-snow,#snow-clear-layer,.snow-cap,.input-snow-cap,#backup-remind-bar){visibility:hidden!important}
+body:has(.call-mask:not([hidden]),.modal-mask:not([hidden]),.tc-mask:not([hidden])) #page-snowfall .card-flake{animation-play-state:paused}
+.perf-list-more{display:block;width:100%;min-height:44px;padding:12px;margin:12px 0;border:1px solid var(--private-line);border-radius:14px;background:var(--private-panel);color:var(--private-ink);font:inherit;cursor:pointer}
+:is(#more-decide,#more-divine,#row-open-divination,.app[data-app="divination"],#home-divine .hd-view)[aria-busy="true"]{opacity:.55}
+#site-load-status{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50010;display:flex;align-items:center;gap:9px;max-width:calc(100vw - 32px);padding:11px 17px;border:1px solid var(--private-line,#ddd);border-radius:24px;background:var(--private-panel,#fff);color:var(--private-ink,#36505d);font:14px system-ui;box-shadow:0 4px 20px #0001;pointer-events:none}
+#site-load-status[hidden]{display:none}
+.site-load-star{display:inline-block;font-size:20px;animation:site-loading-turn 5s linear infinite}
+@keyframes site-loading-turn{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.site-load-star{animation:none}}
+html[data-private-home-ready] #page-phone .app-grid>.app:not(.confirm-all):not([data-app="chat"]):not([data-app="mail"]):not([data-app="feed"]):not([data-app="music"]):not([data-app="calendar"]):not([data-app="interact"]):not([data-app="memo-arc"]){display:none!important}
+</style></head>
 <body>
   
   
@@ -12615,7 +12637,7 @@ html[data-idle-snow] .phone .snow-cap,html[data-idle-snow] .phone .input-snow-ca
       
       
       
-      <div class="ver">Mochi 字卡传讯 2026-11-16-snow-1</div>
+      <div class="ver">Mochi 字卡传讯 2026-11-17-performance-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       
@@ -15907,64 +15929,4 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 
 <section id="music-widget" class="confirm-player"><div class="confirm-song"><div id="mw-cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17V6l10-2v11"/><circle cx="6" cy="17" r="3"/><circle cx="16" cy="15" r="3"/></svg></div><div class="confirm-track"><strong id="mw-song">未在播放</strong><small id="mw-artist">音乐</small></div><div class="confirm-time"><span id="mw-cur">00:00</span> / <span id="mw-dur">00:00</span></div></div><div class="confirm-controls"><button id="mw-heart" aria-label="收藏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20S3 14 3 8.5C3 3 9 2 12 7c3-5 9-4 9 1.5C21 14 12 20 12 20z"/></svg></button><button id="mw-prev" aria-label="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m18 5-10 7 10 7zM5 5v14"/></svg></button><button id="mw-play" aria-label="播放暂停"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m8 5 11 7-11 7z"/></svg></button><button id="mw-next" aria-label="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 5 10 7-10 7zM19 5v14"/></svg></button><button id="mw-queue" aria-label="播放列表"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1"/></svg></button></div><div id="mw-bar"><div id="mw-fill"></div><span id="mw-knob"></span></div></section>
 
-<script defer src="js/device.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('device.js')"></script>
-<script defer src="js/idb.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('idb.js')"></script>
-<script defer src="js/contacts.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('contacts.js')"></script>
-<script defer src="js/applock.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('applock.js')"></script>
-<script defer src="js/card-lock.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('card-lock.js')"></script>
-<script defer src="js/dcp-master.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('dcp-master.js')"></script>
-<script defer src="js/media-pool.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('media-pool.js')"></script>
-<script defer src="js/storage-slim.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('storage-slim.js')"></script>
-<script defer src="js/img-compress.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('img-compress.js')"></script>
-<script defer src="js/img-ingest.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('img-ingest.js')"></script>
-<script defer src="js/tabs.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('tabs.js')"></script>
-<script defer src="js/quote-cards.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('quote-cards.js')"></script>
-<script defer src="js/personalize.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('personalize.js')"></script>
-<script defer src="js/chat.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('chat.js')"></script>
-<script defer src="js/chatcard.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('chatcard.js')"></script>
-<script defer src="js/chat-settings.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('chat-settings.js')"></script>
-<script defer src="js/reply-settings.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('reply-settings.js')"></script>
-<script defer src="js/fav-settings.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('fav-settings.js')"></script>
-<script defer src="js/default-cards-data.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('default-cards-data.js')"></script>
-<script defer src="js/dict-ext-data.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('dict-ext-data.js')"></script>
-<script defer src="js/default-cards.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('default-cards.js')"></script>
-<script defer src="js/quote-spell.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('quote-spell.js')"></script>
-<script defer src="js/dream-free.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('dream-free.js')"></script>
-<script defer src="js/mood-followup-data.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mood-followup-data.js')"></script>
-<script defer src="js/mood-reply-cards.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mood-reply-cards.js')"></script>
-<script defer src="js/ta-mood-data.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ta-mood-data.js')"></script>
-<script defer src="js/ta-mood.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ta-mood.js')"></script>
-<script defer src="js/music-player.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('music-player.js')"></script>
-<script defer src="js/calendar.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('calendar.js')"></script>
-<script defer src="js/divination.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('divination.js')"></script>
-<script defer src="js/avatar-lib.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('avatar-lib.js')"></script>
-<script defer src="js/ta-ask.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ta-ask.js')"></script>
-<script defer src="js/ck-question.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ck-question.js')"></script>
-<script defer src="js/ta-invite.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ta-invite.js')"></script>
-<script defer src="js/bg-keep.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('bg-keep.js')"></script>
-<script defer src="js/records.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('records.js')"></script>
-<script defer src="js/call-statistics.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('call-statistics.js')"></script>
-<script defer src="js/call.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('call.js')"></script>
-<script defer src="js/mail.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mail.js')"></script>
-<script defer src="js/feed.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('feed.js')"></script>
-<script defer src="js/loc-lib.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('loc-lib.js')"></script>
-<script defer src="js/p2-features.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('p2-features.js')"></script>
-<script defer src="js/gift-shop.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('gift-shop.js')"></script>
-<script defer src="js/memo-arc.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('memo-arc.js')"></script>
-<script defer src="js/my-arc.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('my-arc.js')"></script>
-<script defer src="js/period.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('period.js')"></script>
-<script defer src="js/drift-bottle.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('drift-bottle.js')"></script>
-<script defer src="js/decision.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('decision.js')"></script>
-<script defer src="js/group-decision.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('group-decision.js')"></script>
-<script defer src="js/mood-diary.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mood-diary.js')"></script>
-<script defer src="js/sfx.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('sfx.js')"></script>
-<script defer src="js/data-backup.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('data-backup.js')"></script>
-<script defer src="js/feature-data.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('feature-data.js')"></script>
-<script defer src="js/pwa.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('pwa.js')"></script>
-<script defer src="js/settings-help.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('settings-help.js')"></script>
-<script defer src="js/mobile-adapt.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('mobile-adapt.js')"></script>
-<script defer src="js/outfit-journal.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('outfit-journal.js')"></script>
-<script defer src="js/ui-alignment.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ui-alignment.js')"></script>
-<script defer src="js/private-runtime.js"></script>
-<script defer src="js/private-design.js"></script>
-<script defer src="js/opening-assets.js"></script><script defer src="js/appearance.js"></script><script defer src="js/page-motion.js"></script><script defer src="js/snow-effects.js"></script><script defer src="js/idle-snow.js"></script></body></html>
+<script defer src="site-loader.js"></script></body></html>

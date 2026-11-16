@@ -1,0 +1,144 @@
+{
+  "version": "2026-11-17-performance-1",
+  "groups": {
+    "shell": {
+      "files": [
+        "js/device.js",
+        "js/idb.js",
+        "js/contacts.js",
+        "js/applock.js",
+        "js/card-lock.js",
+        "js/dcp-master.js",
+        "js/media-pool.js",
+        "js/storage-slim.js",
+        "js/img-compress.js",
+        "js/img-ingest.js",
+        "js/tabs.js",
+        "js/quote-cards.js",
+        "js/personalize.js",
+        "js/call-statistics.js",
+        "js/outfit-journal.js",
+        "js/mobile-adapt.js",
+        "js/ui-alignment.js",
+        "js/private-runtime.js",
+        "js/home-layout.js",
+        "js/opening-assets.js",
+        "js/appearance.js",
+        "js/page-motion.js",
+        "js/snow-effects.js",
+        "js/idle-snow.js",
+        "js/card-list-loader.js",
+        "js/pwa.js"
+      ],
+      "deps": []
+    },
+    "services": {
+      "files": [
+        "js/chat.js",
+        "js/chatcard.js",
+        "js/chat-settings.js",
+        "js/reply-settings.js",
+        "js/fav-settings.js",
+        "js/default-cards-data.js",
+        "js/dict-ext-data.js",
+        "js/default-cards.js",
+        "js/quote-spell.js",
+        "js/dream-free.js",
+        "js/mood-followup-data.js",
+        "js/mood-reply-cards.js",
+        "js/ta-mood-data.js",
+        "js/ta-mood.js",
+        "js/music-player.js",
+        "js/avatar-lib.js",
+        "js/ta-ask.js",
+        "js/ck-question.js",
+        "js/ta-invite.js",
+        "js/bg-keep.js",
+        "js/records.js",
+        "js/call.js",
+        "js/mail.js",
+        "js/feed.js",
+        "js/loc-lib.js",
+        "js/p2-features.js",
+        "js/gift-shop.js",
+        "js/period.js",
+        "js/group-decision.js",
+        "js/mood-diary.js",
+        "js/sfx.js",
+        "js/data-backup.js",
+        "js/private-design.js"
+      ],
+      "deps": [
+        "shell"
+      ]
+    },
+    "calendar": {
+      "files": [
+        "js/calendar.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    },
+    "archives": {
+      "files": [
+        "js/memo-arc.js",
+        "js/my-arc.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    },
+    "drift": {
+      "files": [
+        "js/drift-bottle.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    },
+    "settings": {
+      "files": [
+        "js/feature-data.js",
+        "js/settings-help.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    },
+    "divination": {
+      "files": [
+        "js/divination.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    },
+    "decision": {
+      "files": [
+        "js/decision.js"
+      ],
+      "deps": [
+        "services"
+      ]
+    }
+  },
+  "coverage": {
+    "nativeScripts": 65,
+    "managedFiles": 67,
+    "initialScript": "js/appearance-boot.js",
+    "replacedScripts": [
+      "js/private-design.js"
+    ]
+  },
+  "bytes": {
+    "shell": 817381,
+    "services": 2672590,
+    "calendar": 25095,
+    "archives": 99389,
+    "drift": 21226,
+    "settings": 85074,
+    "divination": 73806,
+    "decision": 16019
+  }
+}
