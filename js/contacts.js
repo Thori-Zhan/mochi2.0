@@ -1,7 +1,7 @@
 (function(){try{
 (function () {
   const G = 'xy-home-v2';
-  const EXCLUDE = ['contacts', 'active-contact', 'feed-posts', 'migrated-v1', 'js-errors', 'theme-mode', 'accent-color',
+  const EXCLUDE = ['snow-effects-v1', 'contacts', 'active-contact', 'feed-posts', 'migrated-v1', 'js-errors', 'theme-mode', 'accent-color',
     'fish-log', 'fish-log-global-migrated',
     'age-confirmed', 'storage-guide-shown',
     'incoming-requests', 'desk-checkin-en', 'desk-call-en', 'desk-freq-mode', 'call-hold',

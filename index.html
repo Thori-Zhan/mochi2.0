@@ -11437,6 +11437,44 @@ html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 @media(prefers-reduced-motion:reduce){#opening-screen *,#opening-screen ::after{animation:none!important}#opening-screen{transition:none}}
 
 
+/* Animate content surfaces only, preserving the app's existing geometry. */
+.phone .motion-arrive{animation:motion-arrive .24s ease-out both}
+@keyframes motion-arrive{from{opacity:.18}to{opacity:1}}
+#chat-loading .chat-loading-card{padding:8px!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;display:flex;flex-direction:column;align-items:center;gap:9px}
+#chat-loading .chat-loading-txt{font-size:12px!important;color:var(--private-muted)!important}
+#chat-loading .motion-snow{color:var(--private-accent);opacity:.8}
+.motion-snow{width:25px;height:25px;display:block;animation:motion-snow-turn 5.5s linear infinite;transform-origin:center}
+@keyframes motion-snow-turn{to{transform:rotate(360deg)}}
+#chat-loading[hidden] .motion-snow{animation-play-state:paused}
+.opening-footer button:disabled{border-color:transparent;opacity:.7}
+@media(prefers-reduced-motion:reduce){.phone .motion-arrive,.motion-snow{animation:none!important}}
+
+#page-snowfall{position:absolute;overflow:hidden;pointer-events:none;z-index:9001;color:#91aebb;opacity:.68;transition:opacity .45s}
+[data-theme=dark] #page-snowfall{color:#b6c1c3;opacity:.5}
+#page-snowfall[hidden]{display:none!important}
+#page-snowfall.quiet{opacity:.08}
+#page-snowfall .card-flake{position:absolute;top:-5%;animation:card-flake-fall linear infinite;pointer-events:none}
+#page-snowfall .card-flake svg{display:block;width:100%;height:auto}
+@keyframes card-flake-fall{0%{top:-5%;transform:translateX(-2px) rotate(-12deg)}100%{top:105%;transform:translateX(3px) rotate(22deg)}}
+#page-snowfall[hidden] .card-flake{animation-play-state:paused}
+.phone .tabbar{position:relative}
+.phone .tabbar .snow-cap{position:absolute;left:5%;top:-7px;width:90%;height:15px;pointer-events:none;color:#fbfdff;filter:drop-shadow(0 1px 1px #a0b9c254);z-index:4;overflow:visible}
+[data-theme=dark] .phone .tabbar .snow-cap{color:#c6c9c7;filter:drop-shadow(0 1px 1px #0003);opacity:.75}
+.phone .tabbar .snow-cap[hidden]{display:none!important}
+.phone #page-chat .chat-input-row{position:relative}
+.phone .input-snow-cap{position:absolute;height:13px;pointer-events:none;color:#fbfdff;filter:drop-shadow(0 1px 1px #a0b9c254);z-index:4;overflow:visible}
+[data-theme=dark] .phone .input-snow-cap{color:#c6c9c7;filter:drop-shadow(0 1px 1px #0003);opacity:.75}
+.phone .input-snow-cap[hidden]{display:none!important}
+.phone #page-setting .snow-settings{padding:18px 18px 4px!important}
+.snow-settings h3{font-size:16px;font-weight:500;margin:0 0 6px}
+.snow-settings .snow-option{display:flex;justify-content:space-between;align-items:center;gap:14px;min-height:54px;font-size:14px}
+.snow-settings .snow-option+.snow-option{border-top:1px solid var(--private-line)}
+@media(prefers-reduced-motion:reduce){#page-snowfall .card-flake{animation:none}#page-snowfall{transition:none}}
+
+#idle-snow{position:absolute;inset:0;width:100%;height:100%;z-index:9002;pointer-events:none}
+#idle-snow[hidden]{display:none!important}
+html[data-idle-snow] .phone .snow-cap,html[data-idle-snow] .phone .input-snow-cap{visibility:hidden}
+
 </style>
 <script src="js/appearance-boot.js"></script></head>
 <body>
@@ -12577,7 +12615,7 @@ html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
       
       
       
-      <div class="ver">Mochi 字卡传讯 2026-11-15-opening-3</div>
+      <div class="ver">Mochi 字卡传讯 2026-11-16-snow-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       
@@ -15929,4 +15967,4 @@ window.__jsErrors=[];window.__mochiLoaded=[];window.__mochiErrLoaded=[];window._
 <script defer src="js/ui-alignment.js" onerror="window.__mochiExtFail=(window.__mochiExtFail||[]).concat('ui-alignment.js')"></script>
 <script defer src="js/private-runtime.js"></script>
 <script defer src="js/private-design.js"></script>
-<script defer src="js/opening-assets.js"></script><script defer src="js/appearance.js"></script></body></html>
+<script defer src="js/opening-assets.js"></script><script defer src="js/appearance.js"></script><script defer src="js/page-motion.js"></script><script defer src="js/snow-effects.js"></script><script defer src="js/idle-snow.js"></script></body></html>
