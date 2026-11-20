@@ -11365,6 +11365,10 @@ html body .phone .preview-back-icon[hidden]{display:none!important}
 html body .phone #page-chatcard > .cc-top-tabs{margin-top:16px!important}
 
 .opening-pending .phone{visibility:hidden}
+html.appearance-pending,html.appearance-pending body{background:var(--opening-boot-bg,#e2ecf1)!important}
+html.appearance-pending::before{content:'';position:fixed;inset:0;z-index:2147483646;background:var(--opening-boot-bg,#e2ecf1);pointer-events:auto}
+html.appearance-pending body>:not(#site-load-status){visibility:hidden!important}
+html.appearance-pending #site-load-status{visibility:visible!important;z-index:2147483647!important}
 #auto-theme-page[hidden],#opening-screen[hidden],#preview-tools[hidden]{display:none!important}
 #auto-theme-page{position:absolute;inset:0;z-index:9000;background:var(--private-bg,#f6fafb);color:var(--private-ink,#36505d);overflow:auto;padding:0 18px 32px;font-family:inherit}
 .at-header{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;padding:18px 0 22px;position:sticky;top:0;background:var(--private-bg,#f6fafb);z-index:3}
@@ -12637,7 +12641,7 @@ html[data-private-home-ready] #page-phone .app-grid>.app:not(.confirm-all):not([
       
       
       
-      <div class="ver">Mochi 字卡传讯 2026-11-17-performance-1</div>
+      <div class="ver">Mochi 字卡传讯 2026-11-20-opening-flash-1</div>
       <div class="ver-credit">原版小红书@言序（1842523578）</div>
       
       

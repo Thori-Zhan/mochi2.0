@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-17-performance-1",
+  "version": "2026-11-20-opening-flash-1",
   "groups": {
     "shell": {
       "files": [
@@ -132,7 +132,7 @@
     ]
   },
   "bytes": {
-    "shell": 817381,
+    "shell": 817640,
     "services": 2672590,
     "calendar": 25095,
     "archives": 99389,
